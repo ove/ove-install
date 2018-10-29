@@ -1,0 +1,30 @@
+version: '3'
+services:
+  ove-ove-latest:
+    image: ovehub/ove:latest
+    ports:
+    - "8080:8080"
+
+  ove-external-tuoris-latest:
+    image: ovehub/ove-external-tuoris:latest
+    ports:
+    - "7080:7080"
+
+  ove-apps-latest:
+    image: ovehub/ove-apps:latest
+    depends_on:
+      - ove-ove-latest
+    ports:
+    - "8081:8081"
+    - "8082:8082"
+    - "8083:8083"
+    - "8084:8084"
+    - "8085:8085"
+    - "8086:8086"
+    - "8087:8087"
+    - "8088:8088"
+    - "8089:8089"
+    environment:
+      OVE_HOST: "ove-ove-latest:8080"
+      TUORIS_HOST: "ove-external-tuoris-latest:7080"
+
