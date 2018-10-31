@@ -15,16 +15,8 @@ services:
     depends_on:
       - ove-ove-latest
     ports:
-    - "8081:8081"
-    - "8082:8082"
-    - "8083:8083"
-    - "8084:8084"
-    - "8085:8085"
-    - "8086:8086"
-    - "8087:8087"
-    - "8088:8088"
-    - "8089:8089"
+    - "8081-8089:8081-8089"
     environment:
-      OVE_HOST: "ove-ove-latest:8080"
-      TUORIS_HOST: "ove-external-tuoris-latest:7080"
+      OVE_HOST: "hostname or public ip + port"
+      TUORIS_HOST: "hostname or public ip + port"
 
