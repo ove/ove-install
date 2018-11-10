@@ -3,22 +3,22 @@ services:
   ovehub-ove-service-imagetiles:
     image: ovehub/ove-service-imagetiles:latest
     ports:
-    - "8091:80"
+    - "8182:80"
     environment:
       s3Client__AccessKey: ""
       s3Client__Secret: ""
       s3Client__ServiceURL: ""
-      AssetManagerHost: "http:// + hostname or ip + port (without the tailing /)"
-      ServiceHostUrl: "http:// + hostname or ip + port (without the tailing /)"
+      AssetManagerHost: "http:// + hostname or ip + port (without the trailing /)"
+      ServiceHostUrl: "http:// + hostname or ip + port (without the trailing /)"
 
   ovehub-ove-asset-manager:
     image: ovehub/ove-asset-manager:latest
     build: .
     ports:
-    - "80:80"
+    - "8181:80"
     environment:
       s3Client__AccessKey: ""
       s3Client__Secret: ""
       s3Client__ServiceURL: ""
-      ServiceHostUrl: "http:// + hostname or ip + port (without the tailing /)"
+      ServiceHostUrl: "http:// + hostname or ip + port (without the trailing /)"
 
