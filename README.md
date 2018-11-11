@@ -10,7 +10,7 @@ Docker images and docker compose configuration files are provided for easy setup
 
 ## Supported platforms
 
-The system has been fully tested on Ubuntu 18.04 (desktop and server), both bare metal deployment and docker.
+The system has been fully tested on macOS 10.13.4 (High Sierra), Ubuntu 18.04 (desktop and server), both bare metal deployment and docker.
 
 Docker version:
 
