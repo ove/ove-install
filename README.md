@@ -6,7 +6,9 @@ We welcome collaboration under our [Code of Conduct](https://github.com/ove/ove-
 
 ## Deployment guide
 
-Docker images and docker compose configuration files are provided for easy setup. The docker-compose.ove.yml config spins up the OVE framework and docker-compose.asset.yml will create the asset manager service. These images can be configured by customizing the docker-compose files.
+Docker images and docker compose configuration files are provided for an easy setup. The docker-compose.ove.yml config spins up the OVE framework and docker-compose.asset.yml will create the asset manager service. These images can be configured by customizing the docker-compose files.
+
+**NOTE**: The docker-compose.*.yml files need to be configured before the first run by setting all the environment variables and replacing the **public-hostname-or-ip** string with the public hostname or ip of the machine. Please note that this will not work with *localhost* or the docker container hostname because all these servers need to be accessible from the client/browser.
 
 ## Supported platforms
 
