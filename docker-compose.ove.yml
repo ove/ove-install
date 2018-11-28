@@ -5,7 +5,7 @@ services:
     ports:
     - "8080:8080"
 
-  ove-external-tuoris-0-2-0:
+  ove-external-tuoris-0-1-0:
     image: ovehub/ove-external-tuoris:0.1.0
     ports:
     - "7080:7080"
