@@ -1,3 +1,8 @@
+# NOTE: The docker-compose.*.yml files need to be configured before the first run by setting all the environment 
+# variables and replacing the **public-hostname-or-ip** string with the public hostname or ip of the machine. 
+# Please note that this will not work with *localhost* or the docker container hostname because all these servers 
+# need to be accessible from the client/browser.
+
 version: '3'
 services:
   ove-ove-latest:
@@ -17,6 +22,6 @@ services:
     ports:
     - "8081-8089:8081-8089"
     environment:
-      OVE_HOST: "http://localhost:8080"
-      TUORIS_HOST: "http://localhost:7080"
+      OVE_HOST: "http://public-hostname-or-ip:8080"
+      TUORIS_HOST: "http://public-hostname-or-ip:7080"
 

@@ -1,3 +1,8 @@
+# NOTE: The docker-compose.*.yml files need to be configured before the first run by setting all the environment 
+# variables and replacing the **public-hostname-or-ip** string with the public hostname or ip of the machine. 
+# Please note that this will not work with *localhost* or the docker container hostname because all these servers 
+# need to be accessible from the client/browser.
+
 version: '3'
 services:
   ovehub-ove-asset-db:
@@ -22,7 +27,7 @@ services:
       s3Client__AccessKey: ""
       s3Client__Secret: ""
       s3Client__ServiceURL: ""
-      ServiceHostUrl: "http://localhost:8181"
+      ServiceHostUrl: "http://public-hostname-or-ip:8181"
       MariaDB__ConnectionString: "Server=ovehub-ove-asset-db;Port=3306;Database=AssetDatabase;User=assetManager;Password=assetManager;"
       MariaDB__Version: "10.4.0" 
 
@@ -36,8 +41,8 @@ services:
       s3Client__AccessKey: ""
       s3Client__Secret: ""
       s3Client__ServiceURL: ""
-      AssetManagerHostUrl: "http://localhost:8181"
-      ServiceHostUrl: "http://localhost:8182"
+      AssetManagerHostUrl: "http://public-hostname-or-ip:8181"
+      ServiceHostUrl: "http://public-hostname-or-ip:8182"
 
 volumes:
   ovehub-ove-asset-db-data:
