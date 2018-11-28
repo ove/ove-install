@@ -13,7 +13,7 @@ services:
       MYSQL_PASSWORD: "PASSWORD"
 
   ovehub-ove-asset-manager:
-    image: ovehub/ove-asset-manager:latest
+    image: ovehub/ove-asset-manager:latest-unstable
     depends_on:
     - ovehub-ove-asset-db
     ports:
@@ -27,7 +27,7 @@ services:
       MariaDB__Version: "10.4.0" 
 
   ovehub-ove-service-imagetiles:
-    image: ovehub/ove-service-imagetiles:latest
+    image: ovehub/ove-service-imagetiles:latest-unstable
     depends_on:
     - ovehub-ove-asset-manager
     ports:
