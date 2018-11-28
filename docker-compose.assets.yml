@@ -9,8 +9,8 @@ services:
     environment:
       MYSQL_RANDOM_ROOT_PASSWORD: "yes"
       MYSQL_DATABASE: "AssetDatabase"
-      MYSQL_USER: "USER"
-      MYSQL_PASSWORD: "PASSWORD"
+      MYSQL_USER: "assetManager"
+      MYSQL_PASSWORD: "assetManager"
 
   ovehub-ove-asset-manager:
     image: ovehub/ove-asset-manager:latest
@@ -22,8 +22,8 @@ services:
       s3Client__AccessKey: ""
       s3Client__Secret: ""
       s3Client__ServiceURL: ""
-      ServiceHostUrl: "http:// + hostname or ip & port + /"
-      MariaDB__ConnectionString: "Server=ovehub-ove-asset-db;Port=3306;Database=AssetDatabase;User=USER;Password=PASSWORD;"
+      ServiceHostUrl: "http://localhost:8181"
+      MariaDB__ConnectionString: "Server=ovehub-ove-asset-db;Port=3306;Database=AssetDatabase;User=assetManager;Password=assetManager;"
       MariaDB__Version: "10.4.0" 
 
   ovehub-ove-service-imagetiles:
@@ -36,8 +36,8 @@ services:
       s3Client__AccessKey: ""
       s3Client__Secret: ""
       s3Client__ServiceURL: ""
-      AssetManagerHostUrl: "http:// + hostname or ip & port + /"
-      ServiceHostUrl: "http:// + hostname or ip & port + /"
+      AssetManagerHostUrl: "http://localhost:8181"
+      ServiceHostUrl: "http://localhost:8182"
 
 volumes:
   ovehub-ove-asset-db-data:

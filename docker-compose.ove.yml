@@ -17,6 +17,6 @@ services:
     ports:
     - "8081-8089:8081-8089"
     environment:
-      OVE_HOST: "hostname or public ip + port"
-      TUORIS_HOST: "hostname or public ip + port"
+      OVE_HOST: "http://localhost:8080"
+      TUORIS_HOST: "http://localhost:7080"
 
