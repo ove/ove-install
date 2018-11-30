@@ -10,6 +10,12 @@ Docker images and docker compose configuration files are provided for an easy se
 
 **NOTE**: The docker-compose.*.yml files need to be configured before the first run by setting all the environment variables and replacing the **public-hostname-or-ip** string with the public hostname or ip of the machine. Please note that this will not work with *localhost* or the docker container hostname because all these servers need to be accessible from the client/browser.
 
+**NOTE:** The **docker-compose.asset.yml** services will spin up two storage solutions with default parameters. Our recomendation is to follow the MariaDB/MySQL and MINIO guides to setup a high availability cluster for production environments:
+
+- [MariaDB guide](https://mariadb.com/resources/blog/new-certified-docker-images-kubernetes-scripts-simplify-mariadb-cloud-deployments/)
+- [MINIO guide](https://docs.minio.io/docs/distributed-minio-quickstart-guide.html)
+
+
 ## Supported platforms
 
 The system has been fully tested on macOS 10.13.4 (High Sierra), Ubuntu 18.04 (desktop and server), both bare metal deployment and docker.

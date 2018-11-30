@@ -17,6 +17,17 @@ services:
       MYSQL_USER: "assetManager"
       MYSQL_PASSWORD: "assetManager"
 
+  ovehub-ove-asset-storage:
+    image: minio/minio:latest
+    ports:
+    - "9000:9000"
+    volumes:
+      - "ovehub-ove-asset-storage-data:/data"
+    environment:
+      MINIO_ACCESS_KEY: "MINIO_ACCESS_KEY"
+      MINIO_SECRET_KEY: "MINIO_SECRET_KEY"
+    command: server /data
+
   ovehub-ove-asset-manager:
     image: ovehub/ove-asset-manager:latest-unstable
     depends_on:
@@ -24,9 +35,9 @@ services:
     ports:
     - "8181:8181"
     environment:
-      s3Client__AccessKey: ""
-      s3Client__Secret: ""
-      s3Client__ServiceURL: ""
+      s3Client__ServiceURL: "http://ovehub-ove-asset-storage:9000/"
+      s3Client__AccessKey: "MINIO_ACCESS_KEY"
+      s3Client__Secret: "MINIO_SECRET_KEY"
       ServiceHostUrl: "http://public-hostname-or-ip:8181"
       MariaDB__ConnectionString: "Server=ovehub-ove-asset-db;Port=3306;Database=AssetDatabase;User=assetManager;Password=assetManager;"
       MariaDB__Version: "10.4.0" 
@@ -38,11 +49,12 @@ services:
     ports:
     - "8182:8182"
     environment:
-      s3Client__AccessKey: ""
-      s3Client__Secret: ""
-      s3Client__ServiceURL: ""
+      s3Client__ServiceURL: "http://ovehub-ove-asset-storage:9000/"
+      s3Client__AccessKey: "MINIO_ACCESS_KEY"
+      s3Client__Secret: "MINIO_SECRET_KEY"
       AssetManagerHostUrl: "http://public-hostname-or-ip:8181"
       ServiceHostUrl: "http://public-hostname-or-ip:8182"
 
 volumes:
   ovehub-ove-asset-db-data:
+  ovehub-ove-asset-storage-data:
