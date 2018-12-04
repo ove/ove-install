@@ -35,7 +35,7 @@ services:
     ports:
     - "8181:8181"
     environment:
-      s3Client__ServiceURL: "http://ovehub-ove-asset-storage:9000/"
+      s3Client__ServiceURL: "http://public-hostname-or-ip:9000/"
       s3Client__AccessKey: "MINIO_ACCESS_KEY"
       s3Client__Secret: "MINIO_SECRET_KEY"
       ServiceHostUrl: "http://public-hostname-or-ip:8181"
@@ -49,7 +49,7 @@ services:
     ports:
     - "8182:8182"
     environment:
-      s3Client__ServiceURL: "http://ovehub-ove-asset-storage:9000/"
+      s3Client__ServiceURL: "http://public-hostname-or-ip:9000/"
       s3Client__AccessKey: "MINIO_ACCESS_KEY"
       s3Client__Secret: "MINIO_SECRET_KEY"
       AssetManagerHostUrl: "http://public-hostname-or-ip:8181"
