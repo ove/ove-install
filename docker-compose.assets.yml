@@ -55,7 +55,7 @@ services:
       ServiceHostUrl: "http://public-hostname-or-ip:8182"
       
   ovehub-ove-service-archives:
-     image: ovehub/ove-service-archives:latest
+     image: ovehub/ove-service-archives:latest-unstable
      depends_on:
      - ovehub-ove-asset-manager
      ports:
