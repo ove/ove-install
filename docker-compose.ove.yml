@@ -5,24 +5,24 @@
 
 version: '3'
 services:
-  ove-ove-0-2-0:
-    image: ovehub/ove:0.2.0
+  ovehub-ove-ove:
+    image: ovehub/ove:latest-unstable
     ports:
     - "8080:8080"
 
-  ove-external-tuoris-0-1:
+  ovehub-ove-external-tuoris:
     image: ovehub/ove-external-tuoris:v0.1
     ports:
     - "7080:7080"
 
-  ove-apps-0-2-0:
-    image: ovehub/ove-apps:0.2.0
+  ovehub-ove-apps:
+    image: ovehub/ove-apps:latest-unstable
     depends_on:
-      - ove-ove-0-2-0
-      - ove-external-tuoris-0-1
+      - ovehub-ove-ove
+      - ovehub-ove-external-tuoris
     ports:
     - "8081-8089:8081-8089"
     environment:
-      OVE_HOST: "http://public-hostname-or-ip:8080"
-      TUORIS_HOST: "http://public-hostname-or-ip:7080"
+      OVE_HOST: "public-hostname-or-ip:8080"
+      TUORIS_HOST: "public-hostname-or-ip:7080"
 
