@@ -6,7 +6,7 @@
 version: '3'
 services:
   ovehub-ove-ove:
-    image: ovehub/ove:latest-unstable
+    image: ovehub/ove:0.2.0
     ports:
     - "8080:8080"
 
@@ -16,7 +16,7 @@ services:
     - "7080:7080"
 
   ovehub-ove-apps:
-    image: ovehub/ove-apps:latest-unstable
+    image: ovehub/ove-apps:0.2.0
     depends_on:
       - ovehub-ove-ove
       - ovehub-ove-external-tuoris
