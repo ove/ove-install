@@ -8,15 +8,22 @@ We welcome collaboration under our [Code of Conduct](https://github.com/ove/ove-
 
 ## Deployment guide
 
-Docker images and docker compose configuration files are provided for an easy setup. The docker-compose.ove.yml config spins up the OVE framework and docker-compose.asset.yml will create the asset manager service. These images can be configured by customizing the docker-compose files.
+The compiled **setup** file will guide you thorough all the parameters of the setup process.
 
-**NOTE**: The docker-compose.*.yml files need to be configured before the first run by setting all the environment variables and replacing the **public-hostname-or-ip** string with the public hostname or ip of the machine. Please note that this will not work with *localhost* or the docker container hostname because all these servers need to be accessible from the client/browser.
+## Developing/Building a single setup file
 
-**NOTE:** The **docker-compose.asset.yml** services will spin up two storage solutions with default parameters. Our recomendation is to follow the MariaDB/MySQL and MINIO guides to setup a high availability cluster for production environments:
+- Create a virtual environment with virtualenv
+- Install the dependencies (requirements.txt) by running: 
 
-- [MariaDB guide](https://mariadb.com/resources/blog/new-certified-docker-images-kubernetes-scripts-simplify-mariadb-cloud-deployments/)
-- [MINIO guide](https://docs.minio.io/docs/distributed-minio-quickstart-guide.html)
+```bash
+pip install -r requirements.txt
+```
 
+- Build the compiled setup/executable by running:
+
+```bash
+pyinstaller setup.py --add-data templates/docker-compose.*.yml:templates --onefile
+```
 
 ## Supported platforms
 

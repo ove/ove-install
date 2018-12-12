@@ -1,0 +1,79 @@
+version: '3'
+services:
+  ## BEGIN SQL DB CONFIG ##
+  ## this comment is required by the setup.py script and can be removed if this is configured manually ##
+  ovehub-ove-asset-db:
+    image: mariadb:${SQL_DB_VERSION}-bionic
+    ports:
+    - "${SQL_DB_EXT_PORT}:3306"
+    volumes:
+      - "ovehub-ove-asset-db-data:/var/lib/mysql"
+    environment:
+      MYSQL_RANDOM_ROOT_PASSWORD: "yes"
+      MYSQL_DATABASE: "${SQL_DB_NAME}"
+      MYSQL_USER: "${SQL_DB_USER}"
+      MYSQL_PASSWORD: "${SQL_DB_PASSWORD}"
+  ## END SQL DB CONFIG ##
+  ## BEGIN S3 CONFIG ##
+  ## this comment is required by the setup.py script and can be removed if this is configured manually ##
+  ovehub-ove-asset-storage:
+    image: minio/minio:latest
+    ports:
+    - "${S3_EXT_PORT}:9000"
+    volumes:
+      - "ovehub-ove-asset-storage-data:/data"
+    environment:
+      MINIO_ACCESS_KEY: "${S3_ACCESS_KEY}"
+      MINIO_SECRET_KEY: "${S3_SECRET_KEY}"
+    command: server /data
+  ## END S3 CONFIG ##
+  ovehub-ove-asset-manager:
+    image: ovehub/ove-asset-manager:${ASSET_MANAGER_VERSION}
+    ## BEGIN SQL DB DEPENDENCY ##
+    depends_on:
+    - ovehub-ove-asset-db
+    ## END SQL DB DEPENDENCY ##
+    ports:
+    - "8181:8181"
+    environment:
+      s3Client__ServiceURL: "http://${PUBLIC_HOSTNAME}:${S3_PORT}/"
+      s3Client__AccessKey: "${S3_ACCESS_KEY}"
+      s3Client__Secret: "${S3_SECRET_KEY}"
+      MariaDB__ConnectionString: "Server=${SQL_DB_SERVER};Port=${SQL_DB_PORT};Database=${SQL_DB_NAME};User=${SQL_DB_USER};Password=${SQL_DB_PASSWORD};"
+      MariaDB__Version: "${SQL_DB_VERSION}"
+
+  ovehub-ove-service-imagetiles:
+    image: ovehub/ove-service-imagetiles:${ASSET_MANAGER_VERSION}
+    depends_on:
+    - ovehub-ove-asset-manager
+    ports:
+    - "8182:8182"
+    environment:
+      s3Client__ServiceURL: "http://${PUBLIC_HOSTNAME}:9000/"
+      s3Client__AccessKey: "${S3_ACCESS_KEY}"
+      s3Client__Secret: "${S3_SECRET_KEY}"
+      AssetManagerHostUrl: "http://${PUBLIC_HOSTNAME}:8181"
+      ServiceHostUrl: "http://${PUBLIC_HOSTNAME}:8182"
+      
+  ovehub-ove-service-archives:
+     image: ovehub/ove-service-archives:${ASSET_MANAGER_VERSION}
+     depends_on:
+     - ovehub-ove-asset-manager
+     ports:
+     - "8183:8183"
+     environment:
+       s3Client__ServiceURL: "http://${PUBLIC_HOSTNAME}:9000/"
+       s3Client__AccessKey: "${S3_ACCESS_KEY}"
+       s3Client__Secret: "${S3_SECRET_KEY}"
+       AssetManagerHostUrl: "http://${PUBLIC_HOSTNAME}:8181"
+       ServiceHostUrl: "http://${PUBLIC_HOSTNAME}:8183"
+
+## BEGIN STORAGE ##
+volumes:
+## END STORAGE ##
+  ## BEGIN SQL DB STORAGE ##
+  ovehub-ove-asset-db-data:
+  ## END SQL DB STORAGE ##
+  ## BEGIN S3 STORAGE ##
+  ovehub-ove-asset-storage-data:
+  ## END S3 STORAGE ##

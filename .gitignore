@@ -1,0 +1,12 @@
+.idea/
+*.iml
+
+env/
+.env/
+
+build/
+dist/
+__pycache__/
+
+setup.spec
+docker-compose.setup.*.yml
