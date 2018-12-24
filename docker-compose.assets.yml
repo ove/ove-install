@@ -6,7 +6,7 @@
 version: '3'
 services:
   ovehub-ove-asset-db:
-    image: mariadb:10.4.0-bionic
+    image: mariadb:10.4.1-bionic
     ports:
     - "3306:3306"
     volumes:
