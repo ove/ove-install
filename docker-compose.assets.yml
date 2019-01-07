@@ -39,7 +39,7 @@ services:
       s3Client__AccessKey: "MINIO_ACCESS_KEY"
       s3Client__Secret: "MINIO_SECRET_KEY"
       MariaDB__ConnectionString: "Server=ovehub-ove-asset-db;Port=3306;Database=AssetDatabase;User=assetManager;Password=assetManager;"
-      MariaDB__Version: "10.4.0" 
+      MariaDB__Version: "10.4.1" 
 
   ovehub-ove-service-imagetiles:
     image: ovehub/ove-service-imagetiles:latest-unstable
