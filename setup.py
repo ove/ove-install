@@ -1,10 +1,8 @@
 import re
 import os
 import sys
-import readchar
 
 from shutil import which
-from netifaces import ifaddresses, gateways, AF_INET
 
 OVE_VERSION = "0.2.0"
 TUORIS_VERSION = "v0.1"
@@ -36,6 +34,11 @@ def check_dependencies():
 
 
 def get_default_ip():
+    try:
+        from netifaces import ifaddresses, gateways, AF_INET
+    except:
+        print("WARN: Failed to import netifaces, so cannot determine default ip")
+
     try:
         default_iface = gateways()['default'][AF_INET][1]
         addr = ifaddresses(default_iface)
@@ -92,13 +95,6 @@ def outro_msg():
     print("")
     print("NOTE: -d flag runs the docker commands in detached mode")
     print("---")
-    print("Press any key to exit ...")
-    try:
-        readchar.readkey()
-    except:
-        # ignore this exception when running this in PyCharm and other IDEs
-        pass
-
 
 def read_script_params():
     print("")
