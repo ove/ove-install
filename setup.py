@@ -100,7 +100,11 @@ def read_script_params():
     print("")
     print("General settings")
     print("")
-    ip = read_var("machine hostname or ip address", get_default_ip())
+
+    ip = ""
+    while not ip:
+        ip = read_var("machine hostname or ip address", get_default_ip())
+
     defaults = read_flag("Use default settings", "yes")
     if defaults:
         ove_version = OVE_VERSION
