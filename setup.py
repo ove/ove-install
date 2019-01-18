@@ -91,7 +91,7 @@ def outro_msg():
     print("Your docker-compose configs have been generated. You can execute them directly by using:")
     print("")
     print("\t docker-compose -f docker-compose.setup.ove.yml up -d")
-    print("\t docker-compose -f docker-compose.setup.asset.yml up -d")
+    print("\t docker-compose -f docker-compose.setup.assets.yml up -d")
     print("")
     print("NOTE: -d flag runs the docker commands in detached mode")
     print("---")
