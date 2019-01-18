@@ -1,8 +1,8 @@
+from __future__ import print_function
+
 import re
 import os
 import sys
-
-from shutil import which
 
 OVE_VERSION = "0.2.0"
 TUORIS_VERSION = "v0.1"
@@ -21,11 +21,25 @@ S3_ACCESS_KEY = "MINIO_ACCESS_KEY"
 S3_SECRET_KEY = "MINIO_SECRET_KEY"
 
 
+# On Python 2.7, input() evaluates what the user types, and raw_input() simply returns in
+# On Python 3, input() returns it, and ther in no raw_input() function
+try:
+    input = raw_input
+except NameError:
+    pass
+
 def bundle_dir():
     return sys._MEIPASS if getattr(sys, 'frozen', False) else os.path.dirname(os.path.abspath(__file__))
 
 
 def check_dependencies():
+    # shutil.which does not exist in python 2.7
+    try:
+        from shutil import which
+    except:
+        print("WARN: unable to check whether docker and docker-compose are installed")
+        return
+
     if which("docker") is None:
         print("WARN: docker is required to run the system")
 
@@ -38,6 +52,7 @@ def get_default_ip():
         from netifaces import ifaddresses, gateways, AF_INET
     except:
         print("WARN: Failed to import netifaces, so cannot determine default ip")
+        return ""
 
     try:
         default_iface = gateways()['default'][AF_INET][1]
@@ -235,6 +250,8 @@ def main():
     bundle_wd = bundle_dir()
 
     params = read_script_params()
+
+    print("")
 
     generate_scripts(params=params,
                      input_filename=os.path.join(bundle_wd, "templates", "docker-compose.ove.yml"),
