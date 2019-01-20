@@ -4,6 +4,8 @@ import re
 import os
 import sys
 
+from distutils.spawn import find_executable
+
 OVE_VERSION = "0.2.0"
 TUORIS_VERSION = "v0.1"
 ASSET_MANAGER_VERSION = "latest-unstable"
@@ -33,17 +35,10 @@ def bundle_dir():
 
 
 def check_dependencies():
-    # shutil.which does not exist in python 2.7
-    try:
-        from shutil import which
-    except:
-        print("WARN: unable to check whether docker and docker-compose are installed")
-        return
-
-    if which("docker") is None:
+    if find_executable("docker") is None:
         print("WARN: docker is required to run the system")
 
-    if which("docker-compose") is None:
+    if find_executable("docker-compose") is None:
         print("WARN: docker-compose is recommended to run the generated configs")
 
 
