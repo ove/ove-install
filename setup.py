@@ -38,7 +38,7 @@ def check_dependencies():
         print("For install instructions, visit https://docs.docker.com/install/")
 
     if find_executable("docker-compose") is None:
-        print("WARN: docker-compose is recommended to run the generated configs")
+        print("WARN: docker-compose is required to run the generated configs")
         print("For install instructions, visit https://docs.docker.com/compose/install/")
 
 
