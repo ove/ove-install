@@ -11,7 +11,7 @@ services:
     - "7080:7080"
 
   ovehub-ove-apps:
-    image: ovehub/ove-apps:${OVE_VERSION}
+    image: ovehub/ove-apps:${OVE_APPS_VERSION}
     depends_on:
       - ovehub-ove-ove
       - ovehub-ove-external-tuoris

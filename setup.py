@@ -7,6 +7,7 @@ import sys
 from distutils.spawn import find_executable
 
 OVE_VERSION = "0.2.0"
+OVE_APPS_VERSION = "0.2.0"
 TUORIS_VERSION = "v0.1"
 ASSET_MANAGER_VERSION = "latest-unstable"
 
@@ -90,7 +91,8 @@ def intro_msg():
     print("This setup script will generate docker-compose scripts using the following versions:")
     print("\t NOTE: If these versions differ from the latest available, please use the latest setup generator.")
     print("")
-    print("\t OVE & OVE Apps Version: ", OVE_VERSION)
+    print("\t OVE Version: ", OVE_VERSION)
+    print("\t OVE Apps Version: ", OVE_APPS_VERSION)
     print("\t TUORIS Version: ", TUORIS_VERSION)
     print("\t Asset Manager Version: ", ASSET_MANAGER_VERSION)
     print("")
@@ -120,6 +122,7 @@ def read_script_params():
     defaults = read_flag("Use default settings", "yes")
     if defaults:
         ove_version = OVE_VERSION
+        ove_apps_version = OVE_APPS_VERSION
         tuoris_version = TUORIS_VERSION
 
         asset_manager_version = ASSET_MANAGER_VERSION
@@ -144,6 +147,7 @@ def read_script_params():
         print("OVE setup")
         print("")
         ove_version = read_var("OVE Version", OVE_VERSION)
+        ove_apps_version = read_var("OVE Apps Version", OVE_APPS_VERSION)
         tuoris_version = read_var("TUORIS Version", TUORIS_VERSION)
 
         print("")
@@ -183,6 +187,7 @@ def read_script_params():
         'PUBLIC_HOSTNAME': ip,
 
         'OVE_VERSION': ove_version,
+        'OVE_APPS_VERSION': ove_apps_version,
         'TUORIS_VERSION': tuoris_version,
 
         'ASSET_MANAGER_VERSION': asset_manager_version,
