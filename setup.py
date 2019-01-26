@@ -3,17 +3,14 @@ from __future__ import print_function
 import re
 import os
 import sys
+import yaml
 
 from distutils.spawn import find_executable
 
-OVE_VERSION = "0.2.0"
-OVE_APPS_VERSION = "0.2.0"
-TUORIS_VERSION = "v0.1"
-ASSET_MANAGER_VERSION = "latest-unstable"
+INSTALLER_VERSION = "0.2.0"
 
 SQL_DB_SERVER = "ovehub-ove-asset-db"
 SQL_DB_PORT = "3306"
-SQL_DB_VERSION = "10.4.0"
 SQL_DB_DATABASE = "AssetDatabase"
 SQL_DB_USER = "assetManager"
 SQL_DB_PASSWORD = "assetManager"
@@ -87,28 +84,41 @@ def read_flag(message, default_value, note=None):
     return result
 
 
-def intro_msg():
+def intro_msg(params):
     print("This setup script will generate docker-compose scripts using the following versions:")
     print("\t NOTE: If these versions differ from the latest available, please use the latest setup generator.")
     print("")
-    print("\t OVE Version: ", OVE_VERSION)
-    print("\t OVE Apps Version: ", OVE_APPS_VERSION)
-    print("\t TUORIS Version: ", TUORIS_VERSION)
-    print("\t Asset Manager Version: ", ASSET_MANAGER_VERSION)
+    print("\t OVE Version: ", params['OVE_VERSION'])
+    print("\t OVE Apps Version: ", params['OVE_APPS_VERSION'])
+    print("\t TUORIS Version: ", params['TUORIS_VERSION'])
+    print("\t Asset Manager Version: ", params['ASSET_MANAGER_VERSION'])
+    print("\t Database Version: ", params['SQL_DB_VERSION'])
     print("")
 
 
-def outro_msg():
+def outro_msg(proceed):
     print("")
     print("Thank you for using this setup tool!")
     print("---")
-    print("Your docker-compose configs have been generated. You can execute them directly by using:")
-    print("")
-    print("\t docker-compose -f docker-compose.setup.ove.yml up -d")
-    print("\t docker-compose -f docker-compose.setup.assets.yml up -d")
-    print("")
-    print("NOTE: -d flag runs the docker commands in detached mode")
-    print("---")
+    if proceed:
+        print("Your docker-compose configs have been generated. You can execute them directly by using:")
+        print("")
+        print("\t docker-compose -f docker-compose.setup.ove.yml up -d")
+        print("\t docker-compose -f docker-compose.setup.assets.yml up -d")
+        print("")
+        print("NOTE: -d flag runs the docker commands in detached mode")
+        print("---")
+
+def load_version_numbers(installer_version='latest'):
+    try:
+        bundle_wd = bundle_dir()
+        versions = yaml.load(file(os.path.join(bundle_wd, "versions.yml"), 'r'))['versions']
+        return versions[installer_version]
+    except KeyError:
+        return None
+    except yaml.YAMLError:
+        print("ERROR: Unable to parse versions.yml file")
+        sys.exit()
 
 def read_script_params():
     print("")
@@ -119,19 +129,31 @@ def read_script_params():
     while not ip:
         ip = read_var("machine hostname or ip address", get_default_ip())
 
+    use_stable = read_flag("Use 'stable' version", "yes")
+    if use_stable:
+        versions = load_version_numbers(INSTALLER_VERSION)
+    else:
+        use_latest = read_flag("Use 'latest' version", "yes")
+        if use_latest:
+            versions = load_version_numbers('latest')
+        else:
+            version = ""
+            while load_version_numbers(version) is None:
+                version = read_var("Installer version number (x.y.z)", INSTALLER_VERSION)
+            versions = load_version_numbers(version)
+
+    ove_version = versions['ove']
+    ove_apps_version = versions['ove-apps']
+    tuoris_version = versions['tuoris']
+    asset_manager_version = versions['asset-manager']
+    sql_version = versions['mariaDB']
+
     defaults = read_flag("Use default settings", "yes")
     if defaults:
-        ove_version = OVE_VERSION
-        ove_apps_version = OVE_APPS_VERSION
-        tuoris_version = TUORIS_VERSION
-
-        asset_manager_version = ASSET_MANAGER_VERSION
-
         sql_enabled = True
         sql_server = SQL_DB_SERVER
         sql_external_port = SQL_DB_PORT
         sql_port = SQL_DB_PORT
-        sql_version = SQL_DB_VERSION
         sql_db = SQL_DB_DATABASE
         sql_user = SQL_DB_USER
         sql_passwords = SQL_DB_PASSWORD
@@ -144,17 +166,8 @@ def read_script_params():
         s3_secret_key = S3_SECRET_KEY
     else:
         print("")
-        print("OVE setup")
-        print("")
-        ove_version = read_var("OVE Version", OVE_VERSION)
-        ove_apps_version = read_var("OVE Apps Version", OVE_APPS_VERSION)
-        tuoris_version = read_var("TUORIS Version", TUORIS_VERSION)
-
-        print("")
         print("OVE Asset Manager setup")
         print("")
-        asset_manager_version = read_var("Asset Manager Version", ASSET_MANAGER_VERSION)
-
         sql_enabled = read_flag("Use internal SQL DB", "yes")
         if sql_enabled:
             sql_server = SQL_DB_SERVER
@@ -165,7 +178,6 @@ def read_script_params():
             sql_external_port = ""
             sql_port = read_var("SQL DB port", SQL_DB_PORT)
 
-        sql_version = read_var("SQL DB Version", SQL_DB_VERSION)
         sql_db = read_var("SQL DB Name", SQL_DB_DATABASE)
         sql_user = read_var("SQL DB username", SQL_DB_USER)
         sql_passwords = read_var("SQL DB password", SQL_DB_PASSWORD)
@@ -247,23 +259,25 @@ def generate_scripts(input_filename, output_filename, params):
 
 
 def main():
-    intro_msg()
     check_dependencies()
     bundle_wd = bundle_dir()
 
     params = read_script_params()
+    intro_msg(params)
+
+    proceed = read_flag("Accept and proceed", "yes")
 
     print("")
 
-    generate_scripts(params=params,
-                     input_filename=os.path.join(bundle_wd, "templates", "docker-compose.ove.yml"),
-                     output_filename=os.path.join(os.getcwd(), "docker-compose.setup.ove.yml"))
+    if proceed:
+        generate_scripts(params=params,
+                         input_filename=os.path.join(bundle_wd, "templates", "docker-compose.ove.yml"),
+                         output_filename=os.path.join(os.getcwd(), "docker-compose.setup.ove.yml"))
+        generate_scripts(params=params,
+                         input_filename=os.path.join(bundle_wd, "templates", "docker-compose.assets.yml"),
+                         output_filename=os.path.join(os.getcwd(), "docker-compose.setup.assets.yml"))
 
-    generate_scripts(params=params,
-                     input_filename=os.path.join(bundle_wd, "templates", "docker-compose.assets.yml"),
-                     output_filename=os.path.join(os.getcwd(), "docker-compose.setup.assets.yml"))
-
-    outro_msg()
+    outro_msg(proceed)
 
 
 if __name__ == "__main__":

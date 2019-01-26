@@ -22,7 +22,7 @@ pip install -r requirements.txt
 - Build the compiled setup/executable by running:
 
 ```bash
-pyinstaller setup.py --add-data templates/docker-compose.*.yml:templates --onefile
+pyinstaller setup.py --add-data templates/docker-compose.*.yml:templates --add-data versions.yml:. --onefile
 ```
 
 - At the end of the build, the compiled **setup** file can be found at `dist/setup`.
