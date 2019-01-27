@@ -82,6 +82,11 @@ def read_flag(message, default_value, note=None):
     return result
 
 
+def exit_msg():
+    print("")
+    input("Press Enter to exit")
+
+
 def intro_msg(params):
     print("This setup script will generate docker-compose scripts using the following versions:")
     print("\tNOTE: If these versions differ from the latest available, please use the latest setup generator.")
@@ -97,8 +102,9 @@ def intro_msg(params):
 def outro_msg(proceed):
     print("")
     print("Thank you for using this setup tool!")
-    print("---")
     if proceed:
+        print("")
+        print("---")
         print("Your docker-compose configs have been generated. You can execute them directly by using:")
         print("")
         print("\t docker-compose -f docker-compose.setup.ove.yml up -d")
@@ -117,6 +123,7 @@ def load_version_numbers(release):
         return None
     except yaml.YAMLError:
         print("ERROR: Unable to parse versions.yml file")
+        exit_msg()
         sys.exit()
 
 
@@ -127,6 +134,7 @@ def get_stable_version():
         return versions['stable']
     except yaml.YAMLError:
         print("ERROR: Unable to parse versions.yml file")
+        exit_msg()
         sys.exit()
 
 
@@ -289,6 +297,7 @@ def main():
                          output_filename=os.path.join(os.getcwd(), "docker-compose.setup.assets.yml"))
 
     outro_msg(proceed)
+    exit_msg()
 
 
 if __name__ == "__main__":
