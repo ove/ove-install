@@ -6,9 +6,11 @@ OVE is an open-source software stack, designed to be used in large high resoluti
 
 We welcome collaboration under our [Code of Conduct](https://github.com/ove/ove-apps/blob/master/CODE_OF_CONDUCT.md).
 
-## Deployment guide
+## Running the script
 
-The compiled **setup** file will guide you thorough all the parameters of the setup process.
+The compiled **setup** can be downloaded from the repository releases for each platform. The file will guide you thorough all the parameters of the setup process.
+
+Alternatively the Python script can be executed as well. After cloning or downloading this repository, the **setup.py** script can be executed locally using a valid Python 2 or 3 install.
 
 ## Developing/Building a single setup file
 
@@ -21,8 +23,16 @@ pip install -r requirements.txt
 
 - Build the compiled setup/executable by running:
 
+**UNIX:**
+
 ```bash
 pyinstaller setup.py --add-data templates/docker-compose.*.yml:templates --add-data versions.yml:. --onefile
+```
+
+**Windows:**
+
+```bash
+pyinstaller setup.py --add-data templates/docker-compose.*.yml;templates --add-data versions.yml;. --onefile
 ```
 
 - At the end of the build, the compiled **setup** file can be found at `dist/setup`.
