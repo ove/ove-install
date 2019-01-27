@@ -14,8 +14,14 @@ Alternatively the Python script can be executed as well. After cloning or downlo
 
 ## Developing/Building a single setup file
 
+Windows:
+
+The setup procedure expects that you run `pip` and `pyinstaller` in `Command Prompt`. Therefore, when you install Python, please make sure to select [the `Add Python VERSION to PATH` option](https://docs.python.org/3/using/windows.html#installation-steps). If you have already installed Python, please make sure that your `%PATH%` environment variable includes `Python` and `Python\Scripts` in it.
+
 - Create a virtual environment with virtualenv
 - Install the dependencies (requirements.txt) by running: 
+
+Linux/Mac/Windows:
 
 ```bash
 pip install -r requirements.txt
@@ -23,13 +29,13 @@ pip install -r requirements.txt
 
 - Build the compiled setup/executable by running:
 
-**UNIX:**
+Linux/Mac:
 
 ```bash
 pyinstaller setup.py --add-data templates/docker-compose.*.yml:templates --add-data versions.yml:. --onefile
 ```
 
-**Windows:**
+Windows:
 
 ```bash
 pyinstaller setup.py --add-data templates/docker-compose.*.yml;templates --add-data versions.yml;. --onefile
@@ -39,7 +45,7 @@ pyinstaller setup.py --add-data templates/docker-compose.*.yml;templates --add-d
 
 ## Supported platforms
 
-The system has been fully tested on macOS 10.13.4 (High Sierra), Ubuntu 18.04 (desktop and server), both bare metal deployment and docker.
+The system has been tested on Ubuntu 18.04 (desktop and server), macOS 10.13.4 (High Sierra), and Windows 8.1 Enterprise.
 
 Docker version:
 
