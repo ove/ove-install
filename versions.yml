@@ -1,4 +1,6 @@
-versions:
+config_version: 1.0
+stable: 0.2.0
+releases:
   0.3.0:
     ove: 0.3.0
     ove-apps: 0.3.0

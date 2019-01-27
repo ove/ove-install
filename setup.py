@@ -7,8 +7,6 @@ import yaml
 
 from distutils.spawn import find_executable
 
-INSTALLER_VERSION = "0.2.0"
-
 SQL_DB_SERVER = "ovehub-ove-asset-db"
 SQL_DB_PORT = "3306"
 SQL_DB_DATABASE = "AssetDatabase"
@@ -86,7 +84,7 @@ def read_flag(message, default_value, note=None):
 
 def intro_msg(params):
     print("This setup script will generate docker-compose scripts using the following versions:")
-    print("\t NOTE: If these versions differ from the latest available, please use the latest setup generator.")
+    print("\tNOTE: If these versions differ from the latest available, please use the latest setup generator.")
     print("")
     print("\t OVE Version: ", params['OVE_VERSION'])
     print("\t OVE Apps Version: ", params['OVE_APPS_VERSION'])
@@ -109,13 +107,22 @@ def outro_msg(proceed):
         print("NOTE: -d flag runs the docker commands in detached mode")
         print("---")
 
-def load_version_numbers(installer_version='latest'):
+def load_version_numbers(release):
     try:
         bundle_wd = bundle_dir()
-        versions = yaml.load(file(os.path.join(bundle_wd, "versions.yml"), 'r'))['versions']
-        return versions[installer_version]
+        versions = yaml.load(open(os.path.join(bundle_wd, "versions.yml"), 'r'))
+        return versions['releases'][release]
     except KeyError:
         return None
+    except yaml.YAMLError:
+        print("ERROR: Unable to parse versions.yml file")
+        sys.exit()
+
+def get_stable_version():
+    try:
+        bundle_wd = bundle_dir()
+        versions = yaml.load(open(os.path.join(bundle_wd, "versions.yml"), 'r'))
+        return versions['stable']
     except yaml.YAMLError:
         print("ERROR: Unable to parse versions.yml file")
         sys.exit()
@@ -127,11 +134,12 @@ def read_script_params():
 
     ip = ""
     while not ip:
-        ip = read_var("machine hostname or ip address", get_default_ip())
+        ip = read_var("Machine hostname or ip address", get_default_ip())
 
+    stable_version = get_stable_version()
     use_stable = read_flag("Use 'stable' version", "yes")
     if use_stable:
-        versions = load_version_numbers(INSTALLER_VERSION)
+        versions = load_version_numbers(stable_version)
     else:
         use_latest = read_flag("Use 'latest' version", "yes")
         if use_latest:
@@ -139,7 +147,7 @@ def read_script_params():
         else:
             version = ""
             while load_version_numbers(version) is None:
-                version = read_var("Installer version number (x.y.z)", INSTALLER_VERSION)
+                version = read_var("Version number (x.y.z)", stable_version)
             versions = load_version_numbers(version)
 
     ove_version = versions['ove']
