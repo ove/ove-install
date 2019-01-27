@@ -107,6 +107,7 @@ def outro_msg(proceed):
         print("NOTE: -d flag runs the docker commands in detached mode")
         print("---")
 
+
 def load_version_numbers(release):
     try:
         bundle_wd = bundle_dir()
@@ -118,6 +119,7 @@ def load_version_numbers(release):
         print("ERROR: Unable to parse versions.yml file")
         sys.exit()
 
+
 def get_stable_version():
     try:
         bundle_wd = bundle_dir()
@@ -126,6 +128,7 @@ def get_stable_version():
     except yaml.YAMLError:
         print("ERROR: Unable to parse versions.yml file")
         sys.exit()
+
 
 def read_script_params():
     print("")
