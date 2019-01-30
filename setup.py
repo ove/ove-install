@@ -20,7 +20,7 @@ S3_SECRET_KEY = "MINIO_SECRET_KEY"
 
 
 # On Python 2.7, input() evaluates what the user types, and raw_input() simply returns in
-# On Python 3, input() returns it, and ther in no raw_input() function
+# On Python 3, input() returns it, and there is no raw_input() function
 try:
     input = raw_input
 except NameError:
