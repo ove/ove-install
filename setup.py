@@ -19,7 +19,7 @@ S3_ACCESS_KEY = "MINIO_ACCESS_KEY"
 S3_SECRET_KEY = "MINIO_SECRET_KEY"
 
 
-# On Python 2.7, input() evaluates what the user types, and raw_input() simply returns in
+# On Python 2.7, input() evaluates what the user types, and raw_input() simply returns it
 # On Python 3, input() returns it, and there is no raw_input() function
 try:
     input = raw_input
