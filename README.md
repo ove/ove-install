@@ -6,21 +6,48 @@ OVE is an open-source software stack, designed to be used in large high resoluti
 
 We welcome collaboration under our [Code of Conduct](https://github.com/ove/ove-apps/blob/master/CODE_OF_CONDUCT.md).
 
-## Deployment guide
+## Running the script
 
-Docker images and docker compose configuration files are provided for an easy setup. The docker-compose.ove.yml config spins up the OVE framework and docker-compose.asset.yml will create the asset manager service. These images can be configured by customizing the docker-compose files.
+The compiled **setup** can be downloaded from the repository releases for each platform. The file will guide you thorough all the parameters of the setup process.
 
-**NOTE**: The docker-compose.*.yml files need to be configured before the first run by setting all the environment variables and replacing the **public-hostname-or-ip** string with the public hostname or ip of the machine. Please note that this will not work with *localhost* or the docker container hostname because all these servers need to be accessible from the client/browser.
+Alternatively, if Python 2 or 3 is installed then the script can be executed directly, without compilation, by cloning or downloading this repository then running **setup.py**.
 
-**NOTE:** The **docker-compose.asset.yml** services will spin up two storage solutions with default parameters. Our recomendation is to follow the MariaDB/MySQL and MINIO guides to setup a high availability cluster for production environments:
+## Developing/Building a single setup file
 
-- [MariaDB guide](https://mariadb.com/resources/blog/new-certified-docker-images-kubernetes-scripts-simplify-mariadb-cloud-deployments/)
-- [MINIO guide](https://docs.minio.io/docs/distributed-minio-quickstart-guide.html)
+Windows:
 
+The setup procedure expects that you run `pip` and `pyinstaller` in `Command Prompt`. Therefore, when you install Python, please make sure to select [the `Add Python VERSION to PATH` option](https://docs.python.org/3/using/windows.html#installation-steps). If you have already installed Python, please make sure that your `%PATH%` environment variable includes `Python` and `Python\Scripts` in it.
+
+Linux/Mac/Windows:
+
+- Create a virtual environment with virtualenv
+- Install the dependencies (requirements.txt) by running: 
+
+```bash
+pip install -r requirements.txt
+```
+
+- Build the compiled setup/executable by running:
+
+Linux/Mac:
+
+```bash
+pyinstaller setup.py --add-data templates/docker-compose.*.yml:templates --add-data versions.yml:. --onefile
+```
+
+- At the end of the build, the compiled **setup** file can be found at `dist/setup`.
+
+Windows:
+
+```bash
+pyinstaller setup.py --add-data templates/docker-compose.*.yml;templates --add-data versions.yml;. --onefile
+```
+
+- At the end of the build, the compiled **setup** file can be found at `dist/setup.exe`.
 
 ## Supported platforms
 
-The system has been fully tested on macOS 10.13.4 (High Sierra), Ubuntu 18.04 (desktop and server), both bare metal deployment and docker.
+The system has been tested on Ubuntu 18.04 (desktop and server), macOS 10.13.4 (High Sierra), and Windows 8.1 Enterprise.
 
 Docker version:
 

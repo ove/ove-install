@@ -1,0 +1,23 @@
+version: '3'
+services:
+  ovehub-ove-ove:
+    image: ovehub/ove:${OVE_VERSION}
+    ports:
+    - "8080:8080"
+
+  ovehub-ove-external-tuoris:
+    image: ovehub/ove-external-tuoris:${TUORIS_VERSION}
+    ports:
+    - "7080:7080"
+
+  ovehub-ove-apps:
+    image: ovehub/ove-apps:${OVE_APPS_VERSION}
+    depends_on:
+      - ovehub-ove-ove
+      - ovehub-ove-external-tuoris
+    ports:
+    - "8081-8094:8081-8094"
+    environment:
+      OVE_HOST: "${PUBLIC_HOSTNAME}:8080"
+      TUORIS_HOST: "${PUBLIC_HOSTNAME}:7080"
+
