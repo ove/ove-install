@@ -14,11 +14,11 @@ Alternatively, if Python 2 or 3 is installed then the script can be executed dir
 
 ## Developing/Building a single setup file
 
-### Windows
+Windows:
 
 The setup procedure expects that you run `pip` and `pyinstaller` in `Command Prompt`. Therefore, when you install Python, please make sure to select [the `Add Python VERSION to PATH` option](https://docs.python.org/3/using/windows.html#installation-steps). If you have already installed Python, please make sure that your `%PATH%` environment variable includes `Python` and `Python\Scripts` in it.
 
-### Linux/Mac/Windows
+Linux/Mac/Windows:
 
 - Create a virtual environment with virtualenv
 - Install the dependencies (requirements.txt) by running: 
