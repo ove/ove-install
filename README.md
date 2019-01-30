@@ -10,15 +10,15 @@ We welcome collaboration under our [Code of Conduct](https://github.com/ove/ove-
 
 The compiled **setup** can be downloaded from the repository releases for each platform. The file will guide you thorough all the parameters of the setup process.
 
-Alternatively the Python script can be executed as well. After cloning or downloading this repository, the **setup.py** script can be executed locally using a valid Python 2 or 3 install.
+Alternatively, if Python 2 or 3 is installed then the script can be executed directly, without compilation, by cloning or downloading this repository then running **setup.py**.
 
 ## Developing/Building a single setup file
 
-Windows:
+### Windows
 
 The setup procedure expects that you run `pip` and `pyinstaller` in `Command Prompt`. Therefore, when you install Python, please make sure to select [the `Add Python VERSION to PATH` option](https://docs.python.org/3/using/windows.html#installation-steps). If you have already installed Python, please make sure that your `%PATH%` environment variable includes `Python` and `Python\Scripts` in it.
 
-Linux/Mac/Windows:
+### Linux/Mac/Windows
 
 - Create a virtual environment with virtualenv
 - Install the dependencies (requirements.txt) by running: 
