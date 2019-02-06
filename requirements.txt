@@ -5,4 +5,3 @@ netifaces==0.10.9
 pefile==2018.8.8
 PyInstaller==3.4
 readchar==2.0.1
-pyyaml==3.13

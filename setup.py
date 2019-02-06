@@ -3,7 +3,7 @@ from __future__ import print_function
 import re
 import os
 import sys
-import yaml
+import json
 
 from distutils.spawn import find_executable
 
@@ -25,6 +25,14 @@ try:
     input = raw_input
 except NameError:
     pass
+
+
+# On Python 2.7, failing to parse JSON throws a ValueError; on Python 3 it throws json.decoder.JSONDecodeError
+try:
+    from json.decoder import JSONDecodeError
+except ImportError:
+    JSONDecodeError = ValueError
+
 
 def bundle_dir():
     return sys._MEIPASS if getattr(sys, 'frozen', False) else os.path.dirname(os.path.abspath(__file__))
@@ -117,12 +125,17 @@ def outro_msg(proceed):
 def load_version_numbers(release):
     try:
         bundle_wd = bundle_dir()
-        versions = yaml.load(open(os.path.join(bundle_wd, "versions.yml"), 'r'))
+        with open(os.path.join(bundle_wd, "versions.json")) as fp:
+            versions = json.load(fp)
         return versions['releases'][release]
     except KeyError:
         return None
-    except yaml.YAMLError:
-        print("ERROR: Unable to parse versions.yml file")
+    except JSONDecodeError:
+        print("ERROR: Unable to parse versions.json file")
+        exit_msg()
+        sys.exit()
+    except:
+        print("Error: Unable to read versions.json file")
         exit_msg()
         sys.exit()
 
@@ -130,10 +143,15 @@ def load_version_numbers(release):
 def get_stable_version():
     try:
         bundle_wd = bundle_dir()
-        versions = yaml.load(open(os.path.join(bundle_wd, "versions.yml"), 'r'))
+        with open(os.path.join(bundle_wd, "versions.json")) as fp:
+            versions = json.load(fp)
         return versions['stable']
-    except yaml.YAMLError:
-        print("ERROR: Unable to parse versions.yml file")
+    except JSONDecodeError:
+        print("ERROR: Unable to parse versions.json file")
+        exit_msg()
+        sys.exit()
+    except:
+        print("Error: Unable to read versions.json file")
         exit_msg()
         sys.exit()
 

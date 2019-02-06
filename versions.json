@@ -1,0 +1,27 @@
+{
+  "config_version": 1.0,
+  "stable": "0.2.0",
+  "releases": {
+    "0.3.0": {
+      "ove": "0.3.0",
+      "ove-apps": "0.3.0",
+      "asset-manager": "latest-unstable",
+      "tuoris": "v0.1",
+      "mariaDB": "10.4.1"
+    },
+    "0.2.0": {
+      "ove": "0.2.0",
+      "ove-apps": "0.2.0",
+      "asset-manager": "latest-unstable",
+      "tuoris": "v0.1",
+      "mariaDB": "10.4.0"
+    },
+    "latest": {
+      "ove": "latest-unstable",
+      "ove-apps": "latest-unstable",
+      "asset-manager": "latest-unstable",
+      "tuoris": "v0.1",
+      "mariaDB": "10.4.1"
+    }
+  }
+}
