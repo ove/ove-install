@@ -1,27 +1,34 @@
 {
   "config_version": 1.0,
-  "stable": "0.2.0",
+  "stable": "0.3.0",
   "releases": {
+    "0.3.1": {
+      "ove": "0.3.0",
+      "ove-apps": "0.3.0",
+      "ove-services": "0.1.0",
+      "tuoris": "v0.1",
+      "openvidu": "2.8.0"
+    },
     "0.3.0": {
       "ove": "0.3.0",
       "ove-apps": "0.3.0",
-      "asset-manager": "latest-unstable",
+      "ove-services": "0.1.0",
       "tuoris": "v0.1",
-      "mariaDB": "10.4.1"
+      "openvidu": "2.8.0"
     },
     "0.2.0": {
       "ove": "0.2.0",
       "ove-apps": "0.2.0",
-      "asset-manager": "latest-unstable",
+      "ove-services": "0.1.0",
       "tuoris": "v0.1",
-      "mariaDB": "10.4.0"
+      "openvidu": "2.8.0"
     },
     "latest": {
       "ove": "latest-unstable",
       "ove-apps": "latest-unstable",
-      "asset-manager": "latest-unstable",
-      "tuoris": "v0.1",
-      "mariaDB": "10.4.1"
+      "ove-services": "latest-unstable",
+      "tuoris": "v0.1"
     }
-  }
+  },
+  "openvidu": "2.8.0"
 }
