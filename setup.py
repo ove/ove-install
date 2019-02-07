@@ -7,6 +7,8 @@ import yaml
 
 from distutils.spawn import find_executable
 
+OPENVIDU_SECRET = "MY_SECRET"
+
 SQL_DB_SERVER = "ovehub-ove-asset-db"
 SQL_DB_PORT = "3306"
 SQL_DB_DATABASE = "AssetDatabase"
@@ -93,7 +95,8 @@ def intro_msg(params):
     print("")
     print("\t OVE Version: ", params['OVE_VERSION'])
     print("\t OVE Apps Version: ", params['OVE_APPS_VERSION'])
-    print("\t TUORIS Version: ", params['TUORIS_VERSION'])
+    print("\t Tuoris Version: ", params['TUORIS_VERSION'])
+    print("\t OpenVidu Version: ", params['OPENVIDU_VERSION'])
     print("\t Asset Manager Version: ", params['ASSET_MANAGER_VERSION'])
     print("\t Database Version: ", params['SQL_DB_VERSION'])
     print("")
@@ -164,11 +167,14 @@ def read_script_params():
     ove_version = versions['ove']
     ove_apps_version = versions['ove-apps']
     tuoris_version = versions['tuoris']
+    openvidu_version = versions['openvidu']
     asset_manager_version = versions['asset-manager']
     sql_version = versions['mariaDB']
 
     defaults = read_flag("Use default settings", "yes")
     if defaults:
+        openvidu_secret = OPENVIDU_SECRET
+
         sql_enabled = True
         sql_server = SQL_DB_SERVER
         sql_external_port = SQL_DB_PORT
@@ -184,6 +190,12 @@ def read_script_params():
         s3_access_key = S3_ACCESS_KEY
         s3_secret_key = S3_SECRET_KEY
     else:
+        print("")
+        print("OVE setup")
+        print("")
+
+        openvidu_secret = read_var("OpenVidu Secret", OPENVIDU_SECRET)
+
         print("")
         print("OVE Asset Manager setup")
         print("")
@@ -220,6 +232,8 @@ def read_script_params():
         'OVE_VERSION': ove_version,
         'OVE_APPS_VERSION': ove_apps_version,
         'TUORIS_VERSION': tuoris_version,
+        'OPENVIDU_VERSION': openvidu_version,
+        'OPENVIDU_SECRET': openvidu_secret,
 
         'ASSET_MANAGER_VERSION': asset_manager_version,
 
