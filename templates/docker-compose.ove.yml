@@ -17,6 +17,11 @@ services:
     environment:
       openvidu.secret: "${OPENVIDU_SECRET}"
 
+  ovehub-ove-service-persistence-inmemory:
+    image: ovehub/ove-service-persistence-inmemory:${OVE_SERVICES_VERSION}
+    ports:
+    - "8190:8190"
+
   ovehub-ove-apps:
     image: ovehub/ove-apps:${OVE_APPS_VERSION}
     depends_on:
