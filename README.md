@@ -8,7 +8,7 @@ We welcome collaboration under our [Code of Conduct](https://github.com/ove/ove-
 
 ## Running the script
 
-The compiled **setup** can be downloaded from the repository releases for each platform. The file will guide you thorough all the parameters of the setup process.
+The compiled **setup** can be downloaded from the repository releases for each platform. The latest release can be found [here](https://github.com/ove/ove-install/releases/latest). The file will guide you thorough all the parameters of the setup process.
 
 Alternatively, if Python 2 or 3 is installed then the script can be executed directly, without compilation, by cloning or downloading this repository then running **setup.py**.
 
