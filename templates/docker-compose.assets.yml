@@ -1,4 +1,4 @@
-version: '3'
+version: '3.1'
 services:
   ## BEGIN SQL DB CONFIG ##
   ## this comment is required by the setup.py script and can be removed if this is configured manually ##

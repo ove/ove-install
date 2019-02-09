@@ -1,4 +1,4 @@
-version: '3'
+version: '3.1'
 services:
   ovehub-ove-ove:
     image: ovehub/ove:${OVE_VERSION}
