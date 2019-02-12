@@ -16,6 +16,7 @@ services:
     - "4443:4443"
     environment:
       openvidu.secret: "${OPENVIDU_SECRET}"
+      openvidu.publicurl: "https://${PUBLIC_HOSTNAME}:4443"
 
   ovehub-ove-service-persistence-inmemory:
     image: ovehub/ove-service-persistence-inmemory:${OVE_SERVICES_VERSION}
