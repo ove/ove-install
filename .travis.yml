@@ -14,6 +14,17 @@ matrix:
     language: generic
     python: "3.6"
     env: TRAVIS_PYTHON_VERSION=3.6
+  - os: windows
+    language: sh
+    python: "2.7"
+    env: TRAVIS_PYTHON_VERSION=2.7
+  - os: windows
+    language: sh
+    python: "3.6"
+    env: TRAVIS_PYTHON_VERSION=3.6
+
+# Windows builds may not pass due to a TravisCI bug,
+# https://travis-ci.community/t/windows-builds-failing-when-using-env-vars/2214.
 
 # We need to install the correct version of Python for MacOS
 before_install: |
@@ -24,7 +35,19 @@ before_install: |
     else
       virtualenv -p `which python2` venv
     fi
-    source ./venv/bin/activate 
+    source ./venv/bin/activate
+    pip install pip==18.1
+  fi
+  if [ "${TRAVIS_OS_NAME}" == "windows" ]; then
+    if [ "${TRAVIS_PYTHON_VERSION}" == "3.6" ]; then
+      choco install python3
+      export PATH="/c/Python37:/c/Python37/Scripts:$PATH"
+    else
+      choco install python2
+      export PATH="/c/Python27:/c/Python27/Scripts:$PATH"
+      choco install vcpython27
+    fi
+    python -m pip install --upgrade pip wheel
     pip install pip==18.1
   fi
   python --version
@@ -38,12 +61,17 @@ before_install: |
   else
     export FILE_NAME="${TRAVIS_OS_NAME}-python${PYTHON_VERSION}-${TRAVIS_BRANCH}-setup"
   fi
+
 install:
   - pip install -r requirements.txt
 
-script:
-  - pyinstaller setup.py --add-data templates/docker-compose.*.yml:templates --add-data versions.json:. --onefile
-  - cp dist/setup "${FILE_NAME}"
+script: |
+  if [ "${TRAVIS_OS_NAME}" == "windows" ]; then
+    pyinstaller setup.py --add-data "templates/docker-compose.*.yml;templates" --add-data "versions.json;." --onefile
+  else
+    pyinstaller setup.py --add-data templates/docker-compose.*.yml:templates --add-data versions.json:. --onefile
+  fi
+  cp dist/setup "${FILE_NAME}"
 
 # For all commits to a branch, we create draft releases unless they were a pull_request
 # For tags, we upload release artefacts to the tagged release
