@@ -10,8 +10,8 @@ services:
     ports:
     - "7080:7080"
 
-  openvidu-openvidu-server-kms:
-    image: openvidu/openvidu-server-kms:${OPENVIDU_VERSION}
+  openvidu-openvidu-call:
+    image: openvidu/openvidu-call:${OPENVIDU_VERSION}
     ports:
     - "4443:4443"
     environment:
@@ -28,7 +28,7 @@ services:
     depends_on:
       - ovehub-ove-ove
       - ovehub-ove-external-tuoris
-      - openvidu-openvidu-server-kms
+      - openvidu-openvidu-call
     ports:
     - "8081-8094:8081-8094"
     environment:

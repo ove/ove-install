@@ -7,28 +7,28 @@
       "ove-apps": "0.3.1",
       "ove-services": "0.1.0",
       "tuoris": "v0.1",
-      "openvidu": "2.8.0"
+      "openvidu": "2.7.0"
     },
     "0.3.0": {
       "ove": "0.3.0",
       "ove-apps": "0.3.0",
       "ove-services": "0.1.0",
       "tuoris": "v0.1",
-      "openvidu": "2.8.0"
+      "openvidu": "2.7.0"
     },
     "0.2.0": {
       "ove": "0.2.0",
       "ove-apps": "0.2.0",
       "ove-services": "0.1.0",
       "tuoris": "v0.1",
-      "openvidu": "2.8.0"
+      "openvidu": "2.7.0"
     },
     "latest": {
       "ove": "latest-unstable",
       "ove-apps": "latest-unstable",
       "ove-services": "latest-unstable",
       "tuoris": "v0.1",
-      "openvidu": "2.8.0"
+      "openvidu": "2.7.0"
     }
   }
 }
