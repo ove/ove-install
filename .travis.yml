@@ -40,8 +40,8 @@ before_install: |
   fi
   if [ "${TRAVIS_OS_NAME}" == "windows" ]; then
     if [ "${TRAVIS_PYTHON_VERSION}" == "3.6" ]; then
-      choco install python3
-      export PATH="/c/Python37:/c/Python37/Scripts:$PATH"
+      choco install python3 --version 3.6.8
+      export PATH="/c/Python36:/c/Python36/Scripts:$PATH"
     else
       choco install python2
       export PATH="/c/Python27:/c/Python27/Scripts:$PATH"
