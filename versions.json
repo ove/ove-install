@@ -1,7 +1,14 @@
 {
   "config_version": 1.0,
-  "stable": "0.3.2",
+  "stable": "0.3.3",
   "releases": {
+    "0.3.3": {
+      "ove": "0.3.3",
+      "ove-apps": "0.3.3",
+      "ove-services": "0.1.1",
+      "tuoris": "v0.1",
+      "openvidu": "2.7.0"
+    },
     "0.3.2": {
       "ove": "0.3.2",
       "ove-apps": "0.3.2",
