@@ -10,3 +10,4 @@ __pycache__/
 
 setup.spec
 docker-compose.setup.*.yml
+config/credentials.json

@@ -1,0 +1,56 @@
+version: '3'
+services:
+  ## BEGIN S3 CONFIG ##
+  ## this comment is required by the setup.py script and can be removed if this is configured manually ##
+  ovehub-ove-asset-storage:
+    image: minio/minio:latest
+    ports:
+      - "${S3_EXT_PORT}:9000"
+    volumes:
+      - "ovehub-ove-asset-storage-data:/data"
+    environment:
+      MINIO_ACCESS_KEY: "${S3_ACCESS_KEY}"
+      MINIO_SECRET_KEY: "${S3_SECRET_KEY}"
+    command: server /data
+
+  ## END S3 CONFIG ##
+  ovehub-ove-asset-manager-service:
+    image: ovehub/ove-asset-manager-service:${ASSET_MANAGER_VERSION}
+    ports:
+      - "6080:6080"
+    volumes:
+      - ./config/:/code/config/:ro
+    environment:
+      GUNICORN_THREADS: "8"
+      SERVICE_LOG_LEVEL: "info"
+
+  ovehub-ove-asset-manager-worker-zip:
+    image: ovehub/ove-asset-manager-worker-zip:${ASSET_MANAGER_VERSION}
+    environment:
+      SERVICE_LOG_LEVEL: "info"
+      SERVICE_AM_HOSTNAME: "ovehub-ove-asset-manager-service"
+      SERVICE_AM_PORT: "6080"
+
+
+  ovehub-ove-asset-manager-worker-dzi:
+    image: ovehub/ove-asset-manager-worker-dzi:${ASSET_MANAGER_VERSION}
+    environment:
+      SERVICE_LOG_LEVEL: "info"
+      SERVICE_AM_HOSTNAME: "ovehub-ove-asset-manager-service"
+      SERVICE_AM_PORT: "6080"
+
+  ovehub-ove-asset-manager-ui:
+    image: ovehub/ove-asset-manager-ui:${ASSET_MANAGER_VERSION}
+    ports:
+      - "6060:6060"
+    environment:
+      SERVICE_LOG_LEVEL: "info"
+      SERVICE_AM_HOSTNAME: "ovehub-ove-asset-manager-service"
+      SERVICE_AM_PORT: "6080"
+
+## BEGIN STORAGE ##
+volumes:
+## END STORAGE ##
+  ## BEGIN S3 STORAGE ##
+  ovehub-ove-asset-storage-data:
+  ## END S3 STORAGE ##
