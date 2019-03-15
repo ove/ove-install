@@ -42,7 +42,8 @@
       "ove-apps": "latest-unstable",
       "ove-services": "latest-unstable",
       "tuoris": "v0.1",
-      "openvidu": "2.7.0"
+      "openvidu": "2.7.0",
+      "asset-manager": "latest-unstable"
     }
   }
 }

@@ -67,9 +67,9 @@ install:
 
 script: |
   if [ "${TRAVIS_OS_NAME}" == "windows" ]; then
-    pyinstaller setup.py --add-data "templates/docker-compose.*.yml;templates" --add-data "versions.json;." --onefile
+    pyinstaller setup.py --add-data "templates/docker-compose.*.yml;templates" --add-data templates/config/*.json;templates/config --add-data "versions.json;." --onefile
   else
-    pyinstaller setup.py --add-data templates/docker-compose.*.yml:templates --add-data versions.json:. --onefile
+    pyinstaller setup.py --add-data templates/docker-compose.*.yml:templates --add-data templates/config/*.json:templates/config --add-data versions.json:. --onefile
   fi
   cp dist/setup "${FILE_NAME}"
 

@@ -1,25 +1,22 @@
+#!/usr/bin/env python
+
 from __future__ import print_function
 
-import re
-import os
-import sys
+import errno
 import json
-
+import os
+import re
+import sys
 from distutils.spawn import find_executable
 
 OPENVIDU_SECRET = "MY_SECRET"
 
-#SQL_DB_SERVER = "ovehub-ove-asset-db"
-#SQL_DB_PORT = "3306"
-#SQL_DB_DATABASE = "AssetDatabase"
-#SQL_DB_USER = "assetManager"
-#SQL_DB_PASSWORD = "assetManager"
+AM_STORE_NAME = "default"
 
-#S3_SERVER = "ovehub-ove-asset-storage"
-#S3_PORT = "9000"
-#S3_ACCESS_KEY = "MINIO_ACCESS_KEY"
-#S3_SECRET_KEY = "MINIO_SECRET_KEY"
-
+S3_SERVER = "ovehub-ove-asset-storage"
+S3_PORT = "9000"
+S3_ACCESS_KEY = "MINIO_ACCESS_KEY"
+S3_SECRET_KEY = "MINIO_SECRET_KEY"
 
 # On Python 2.7, input() evaluates what the user types, and raw_input() simply returns it
 # On Python 3, input() returns it, and there is no raw_input() function
@@ -27,7 +24,6 @@ try:
     input = raw_input
 except NameError:
     pass
-
 
 # On Python 2.7, failing to parse JSON throws a ValueError; on Python 3 it throws json.decoder.JSONDecodeError
 try:
@@ -106,12 +102,12 @@ def intro_msg(params):
     print("\t OVE Services Version: ", params['OVE_SERVICES_VERSION'])
     print("\t Tuoris Version: ", params['TUORIS_VERSION'])
     print("\t OpenVidu Version: ", params['OPENVIDU_VERSION'])
-    #print("\t Asset Manager Version: ", params['ASSET_MANAGER_VERSION'])
-    #print("\t Database Version: ", params['SQL_DB_VERSION'])
+    if params['ASSET_MANAGER_VERSION']:
+        print("\t Asset Manager Version: ", params['ASSET_MANAGER_VERSION'])
     print("")
 
 
-def outro_msg(proceed):
+def outro_msg(proceed, params):
     print("")
     print("Thank you for using this setup tool!")
     if proceed:
@@ -120,7 +116,9 @@ def outro_msg(proceed):
         print("Your docker-compose configs have been generated. You can execute them directly by using:")
         print("")
         print("\t docker-compose -f docker-compose.setup.ove.yml up -d")
-        #print("\t docker-compose -f docker-compose.setup.assets.yml up -d")
+        if params['ASSET_MANAGER_VERSION']:
+            print("\t docker-compose -f docker-compose.setup.am.yml up -d")
+            print("\t NOTE: If you copy the compose files to another machine, please copy the generated 'config/credentials.json' file as well")
         print("")
         print("NOTE: -d flag runs the docker commands in detached mode")
         print("---")
@@ -188,27 +186,33 @@ def read_script_params():
     ove_services_version = versions['ove-services']
     tuoris_version = versions['tuoris']
     openvidu_version = versions['openvidu']
-    #asset_manager_version = versions['asset-manager']
-    #sql_version = versions['mariaDB']
+    asset_manager_version = versions.get('asset-manager', None)
+
+    # defaults
+    am_store_name = None
+
+    s3_enabled = False
+    s3_server = None
+    s3_external_ip = None
+    s3_external_port = None
+    s3_port = None
+    s3_access_key = None
+    s3_secret_key = None
 
     defaults = read_flag("Use default settings", "yes")
     if defaults:
         openvidu_secret = OPENVIDU_SECRET
 
-        #sql_enabled = True
-        #sql_server = SQL_DB_SERVER
-        #sql_external_port = SQL_DB_PORT
-        #sql_port = SQL_DB_PORT
-        #sql_db = SQL_DB_DATABASE
-        #sql_user = SQL_DB_USER
-        #sql_passwords = SQL_DB_PASSWORD
+        if asset_manager_version:
+            am_store_name = AM_STORE_NAME
 
-        #s3_enabled = True
-        #s3_server = S3_SERVER
-        #s3_external_port = S3_PORT
-        #s3_port = S3_PORT
-        #s3_access_key = S3_ACCESS_KEY
-        #s3_secret_key = S3_SECRET_KEY
+            s3_enabled = True
+            s3_server = S3_SERVER
+            s3_external_ip = ip
+            s3_external_port = S3_PORT
+            s3_port = S3_PORT
+            s3_access_key = S3_ACCESS_KEY
+            s3_secret_key = S3_SECRET_KEY
     else:
         print("")
         print("OVE setup")
@@ -216,35 +220,27 @@ def read_script_params():
 
         openvidu_secret = read_var("OpenVidu Secret", OPENVIDU_SECRET)
 
-        #print("")
-        #print("OVE Asset Manager setup")
-        #print("")
-        #sql_enabled = read_flag("Use internal SQL DB", "yes")
-        #if sql_enabled:
-        #    sql_server = SQL_DB_SERVER
-        #    sql_external_port = read_var("SQL DB external port", SQL_DB_PORT)
-        #    sql_port = SQL_DB_PORT
-        #else:
-        #    sql_server = read_var("SQL DB server", ip)
-        #    sql_external_port = ""
-        #    sql_port = read_var("SQL DB port", SQL_DB_PORT)
+        if asset_manager_version:
+            print("")
+            print("OVE Asset Manager setup")
+            print("")
 
-        #sql_db = read_var("SQL DB Name", SQL_DB_DATABASE)
-        #sql_user = read_var("SQL DB username", SQL_DB_USER)
-        #sql_passwords = read_var("SQL DB password", SQL_DB_PASSWORD)
+            am_store_name = read_var("Asset Manager default store name", AM_STORE_NAME)
 
-        #s3_enabled = read_flag("Use internal S3 storage", "yes")
-        #if s3_enabled:
-        #    s3_server = S3_SERVER
-        #    s3_external_port = read_var("S3 external port", S3_PORT)
-        #    s3_port = S3_PORT
-        #else:
-        #    s3_server = read_var("S3 server", ip)
-        #    s3_external_port = ""
-        #    s3_port = read_var("S3 server port", S3_PORT)
+            s3_enabled = read_flag("Use internal S3 storage", "yes")
+            if s3_enabled:
+                s3_server = S3_SERVER
+                s3_external_ip = read_var("S3 external ip or hostname", ip)
+                s3_external_port = read_var("S3 external port", S3_PORT)
+                s3_port = S3_PORT
+            else:
+                s3_server = read_var("S3 server", ip)
+                s3_port = read_var("S3 server port", S3_PORT)
+                s3_external_ip = s3_server
+                s3_external_port = s3_port
 
-        #s3_access_key = read_var("S3 Access key", S3_ACCESS_KEY)
-        #s3_secret_key = read_var("S3 Secret key", S3_SECRET_KEY)
+            s3_access_key = read_var("S3 Access key", S3_ACCESS_KEY)
+            s3_secret_key = read_var("S3 Secret key", S3_SECRET_KEY)
 
     return {
         'PUBLIC_HOSTNAME': ip,
@@ -256,23 +252,17 @@ def read_script_params():
         'OPENVIDU_VERSION': openvidu_version,
         'OPENVIDU_SECRET': openvidu_secret,
 
-        #'ASSET_MANAGER_VERSION': asset_manager_version,
+        'ASSET_MANAGER_VERSION': asset_manager_version,
 
-        #'SQL_DB_ENABLED': sql_enabled,
-        #'SQL_DB_SERVER': sql_server,
-        #'SQL_DB_PORT': sql_port,
-        #'SQL_DB_EXT_PORT': sql_external_port,
-        #'SQL_DB_VERSION': sql_version,
-        #'SQL_DB_NAME': sql_db,
-        #'SQL_DB_USER': sql_user,
-        #'SQL_DB_PASSWORD': sql_passwords,
+        'AM_STORE_NAME': am_store_name,
 
-        #'S3_ENABLED': s3_enabled,
-        #'S3_SERVER': s3_server,
-        #'S3_EXT_PORT': s3_external_port,
-        #'S3_PORT': s3_port,
-        #'S3_ACCESS_KEY': s3_access_key,
-        #'S3_SECRET_KEY': s3_secret_key,
+        'S3_ENABLED': s3_enabled,
+        'S3_SERVER': s3_server,
+        'S3_PORT': s3_port,
+        'S3_EXT_PORT': s3_external_port,
+        'S3_EXT_IP': s3_external_ip,
+        'S3_ACCESS_KEY': s3_access_key,
+        'S3_SECRET_KEY': s3_secret_key,
     }
 
 
@@ -285,26 +275,27 @@ def generate_scripts(input_filename, output_filename, params):
         content = content.replace("${%s}" % k, str(v))
         content = content.replace("$%s" % k, str(v))
 
-    #if not params['SQL_DB_ENABLED']:
-    #    content = re.sub(pattern=r"[ ]*## BEGIN SQL DB CONFIG ##.*## END SQL DB CONFIG ##[ ]*\n?",
-    #                     repl="", string=content, flags=re.MULTILINE | re.DOTALL)
-    #    content = re.sub(pattern=r"[ ]*## BEGIN SQL DB DEPENDENCY ##.*## END SQL DB DEPENDENCY ##[ ]*\n?",
-    #                     repl="", string=content, flags=re.MULTILINE | re.DOTALL)
-    #    content = re.sub(pattern=r"[ ]*## BEGIN SQL DB STORAGE ##.*## END SQL DB STORAGE ##[ ]*\n?",
-    #                     repl="", string=content, flags=re.MULTILINE | re.DOTALL)
+    if not params['S3_ENABLED']:
+        content = re.sub(pattern=r"[ ]*## BEGIN S3 CONFIG ##.*## END S3 CONFIG ##[ ]*\n?",
+                         repl="", string=content, flags=re.MULTILINE | re.DOTALL)
+        content = re.sub(pattern=r"[ ]*## BEGIN S3 STORAGE ##.*## END S3 STORAGE ##[ ]*\n?",
+                         repl="", string=content, flags=re.MULTILINE | re.DOTALL)
 
-    #if not params['S3_ENABLED']:
-    #    content = re.sub(pattern=r"[ ]*## BEGIN S3 CONFIG ##.*## END S3 CONFIG ##[ ]*\n?",
-    #                     repl="", string=content, flags=re.MULTILINE | re.DOTALL)
-    #    content = re.sub(pattern=r"[ ]*## BEGIN S3 STORAGE ##.*## END S3 STORAGE ##[ ]*\n?",
-    #                     repl="", string=content, flags=re.MULTILINE | re.DOTALL)
-
-    #if not params['SQL_DB_ENABLED'] and not params['S3_ENABLED']:
-    #    content = re.sub(pattern=r"[ ]*## BEGIN STORAGE ##.*## END STORAGE ##[ ]*\n?",
-    #                     repl="", string=content, flags=re.MULTILINE | re.DOTALL)
+    if not params['S3_ENABLED']:
+        content = re.sub(pattern=r"[ ]*## BEGIN STORAGE ##.*## END STORAGE ##[ ]*\n?",
+                         repl="", string=content, flags=re.MULTILINE | re.DOTALL)
 
     # cleanup "special comments"
     content = re.sub(pattern=r"[ ]*##.*##[ ]*\n?", repl="", string=content)
+
+    output_path = os.path.dirname(output_filename)
+    try:
+        os.makedirs(output_path)
+    except OSError as ex:
+        if ex.errno == errno.EEXIST and os.path.isdir(output_path):
+            pass
+        else:
+            raise
 
     with open(output_filename, mode="w") as fout:
         fout.write(content)
@@ -327,13 +318,22 @@ def main():
         generate_scripts(params=params,
                          input_filename=os.path.join(bundle_wd, "templates", "docker-compose.ove.yml"),
                          output_filename=os.path.join(os.getcwd(), "docker-compose.setup.ove.yml"))
-        #generate_scripts(params=params,
-        #                 input_filename=os.path.join(bundle_wd, "templates", "docker-compose.assets.yml"),
-        #                 output_filename=os.path.join(os.getcwd(), "docker-compose.setup.assets.yml"))
 
-    outro_msg(proceed)
+        if params['ASSET_MANAGER_VERSION']:
+            generate_scripts(params=params,
+                             input_filename=os.path.join(bundle_wd, "templates", "docker-compose.am.yml"),
+                             output_filename=os.path.join(os.getcwd(), "docker-compose.setup.am.yml"))
+            generate_scripts(params=params,
+                             input_filename=os.path.join(bundle_wd, "templates", "config", "credentials.template.json"),
+                             output_filename=os.path.join(os.getcwd(), "config", "credentials.json"))
+
+    outro_msg(proceed, params)
     exit_msg()
 
 
 if __name__ == "__main__":
-    main()
+    try:
+        main()
+    except KeyboardInterrupt:
+        # ignore
+        pass

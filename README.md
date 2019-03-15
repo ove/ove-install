@@ -32,7 +32,10 @@ pip install -r requirements.txt
 Linux/Mac:
 
 ```bash
-pyinstaller setup.py --add-data templates/docker-compose.*.yml:templates --add-data versions.json:. --onefile
+pyinstaller setup.py --add-data templates/docker-compose.*.yml:templates \
+                     --add-data templates/config/*.json:templates/config \ 
+                     --add-data versions.json:. \
+                     --onefile
 ```
 
 - At the end of the build, the compiled **setup** file can be found at `dist/setup`.
@@ -40,7 +43,10 @@ pyinstaller setup.py --add-data templates/docker-compose.*.yml:templates --add-d
 Windows:
 
 ```bash
-pyinstaller setup.py --add-data "templates/docker-compose.*.yml;templates" --add-data "versions.json;." --onefile
+pyinstaller setup.py --add-data "templates/docker-compose.*.yml;templates" \
+                     --add-data "templates/config/*.json;templates/config" \
+                     --add-data "versions.json;." \
+                     --onefile
 ```
 
 - At the end of the build, the compiled **setup** file can be found at `dist/setup.exe`.
