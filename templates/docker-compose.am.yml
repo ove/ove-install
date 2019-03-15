@@ -26,6 +26,8 @@ services:
 
   ovehub-ove-asset-manager-worker-zip:
     image: ovehub/ove-asset-manager-worker-zip:${ASSET_MANAGER_VERSION}
+    depends_on:
+      - ovehub-ove-asset-manager-service
     environment:
       SERVICE_LOG_LEVEL: "info"
       SERVICE_AM_HOSTNAME: "ovehub-ove-asset-manager-service"
@@ -34,6 +36,8 @@ services:
 
   ovehub-ove-asset-manager-worker-dzi:
     image: ovehub/ove-asset-manager-worker-dzi:${ASSET_MANAGER_VERSION}
+    depends_on:
+      - ovehub-ove-asset-manager-service
     environment:
       SERVICE_LOG_LEVEL: "info"
       SERVICE_AM_HOSTNAME: "ovehub-ove-asset-manager-service"
