@@ -43,6 +43,15 @@ services:
       SERVICE_AM_HOSTNAME: "ovehub-ove-asset-manager-service"
       SERVICE_AM_PORT: "6080"
 
+  ovehub-ove-asset-manager-worker-tulip:
+    image: ovehub/ove-asset-manager-worker-tulip:${ASSET_MANAGER_VERSION}
+    depends_on:
+      - ovehub-ove-asset-manager-service
+    environment:
+      SERVICE_LOG_LEVEL: "info"
+      SERVICE_AM_HOSTNAME: "ovehub-ove-asset-manager-service"
+      SERVICE_AM_PORT: "6080"
+
   ovehub-ove-asset-manager-ui:
     image: ovehub/ove-asset-manager-ui:${ASSET_MANAGER_VERSION}
     ports:
