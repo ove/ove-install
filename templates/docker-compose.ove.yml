@@ -37,3 +37,14 @@ services:
       OPENVIDU_HOST: "${PUBLIC_HOSTNAME}:4443"
       OPENVIDU_SECRET: "${OPENVIDU_SECRET}"
 
+  ovehub-ove-ui:
+    image: ovehub/ove-ui:${OVE_UI_VERSION}
+    depends_on:
+      - ovehub-ove-ove
+      - ovehub-ove-apps
+    volumes:
+      - ./config/ove.ui.env:/usr/src/app/packages/ove-ui-preview/.env:ro
+      - ./config/ove.ui.env:/usr/src/app/packages/ove-ui-launcher/.env:ro
+    ports:
+    - "8281-8282:8281-8282"
+

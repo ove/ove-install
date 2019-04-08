@@ -33,7 +33,7 @@ Linux/Mac:
 
 ```bash
 pyinstaller setup.py --add-data templates/docker-compose.*.yml:templates \
-                     --add-data templates/config/*.json:templates/config \ 
+                     --add-data templates/config/*.*:templates/config \ 
                      --add-data versions.json:. \
                      --onefile
 ```
@@ -44,7 +44,7 @@ Windows:
 
 ```bash
 pyinstaller setup.py --add-data "templates/docker-compose.*.yml;templates" \
-                     --add-data "templates/config/*.json;templates/config" \
+                     --add-data "templates/config/*.*;templates/config" \
                      --add-data "versions.json;." \
                      --onefile
 ```

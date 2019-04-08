@@ -100,6 +100,7 @@ def intro_msg(params):
     print("\t OVE Version: ", params['OVE_VERSION'])
     print("\t OVE Apps Version: ", params['OVE_APPS_VERSION'])
     print("\t OVE Services Version: ", params['OVE_SERVICES_VERSION'])
+    print("\t OVE UI Version: ", params['OVE_UI_VERSION'])
     print("\t Tuoris Version: ", params['TUORIS_VERSION'])
     print("\t OpenVidu Version: ", params['OPENVIDU_VERSION'])
     if params['ASSET_MANAGER_VERSION']:
@@ -184,6 +185,7 @@ def read_script_params():
     ove_version = versions['ove']
     ove_apps_version = versions['ove-apps']
     ove_services_version = versions['ove-services']
+    ove_ui_version = versions['ove-ui']
     tuoris_version = versions['tuoris']
     openvidu_version = versions['openvidu']
     asset_manager_version = versions.get('asset-manager', None)
@@ -248,6 +250,7 @@ def read_script_params():
         'OVE_VERSION': ove_version,
         'OVE_APPS_VERSION': ove_apps_version,
         'OVE_SERVICES_VERSION': ove_services_version,
+        'OVE_UI_VERSION': ove_ui_version,
         'TUORIS_VERSION': tuoris_version,
         'OPENVIDU_VERSION': openvidu_version,
         'OPENVIDU_SECRET': openvidu_secret,
@@ -318,6 +321,9 @@ def main():
         generate_scripts(params=params,
                          input_filename=os.path.join(bundle_wd, "templates", "docker-compose.ove.yml"),
                          output_filename=os.path.join(os.getcwd(), "docker-compose.setup.ove.yml"))
+        generate_scripts(params=params,
+                         input_filename=os.path.join(bundle_wd, "templates", "config", "ove.ui.template.env"),
+                         output_filename=os.path.join(os.getcwd(), "config", "ove.ui.env"))
 
         if params['ASSET_MANAGER_VERSION']:
             generate_scripts(params=params,
