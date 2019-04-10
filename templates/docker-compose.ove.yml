@@ -4,6 +4,8 @@ services:
     image: ovehub/ove:${OVE_VERSION}
     ports:
     - "8080:8080"
+    volumes:
+      - ./config/Spaces.json:/usr/src/app/packages/ove-core/dist/client/Spaces.json:ro
 
   ovehub-ove-external-tuoris:
     image: ovehub/ove-external-tuoris:${TUORIS_VERSION}

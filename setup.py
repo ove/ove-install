@@ -322,6 +322,9 @@ def main():
                          input_filename=os.path.join(bundle_wd, "templates", "docker-compose.ove.yml"),
                          output_filename=os.path.join(os.getcwd(), "docker-compose.setup.ove.yml"))
         generate_scripts(params=params,
+                         input_filename=os.path.join(bundle_wd, "templates", "config", "Spaces.json"),
+                         output_filename=os.path.join(os.getcwd(), "config", "Spaces.json"))
+        generate_scripts(params=params,
                          input_filename=os.path.join(bundle_wd, "templates", "config", "ove.ui.template.env"),
                          output_filename=os.path.join(os.getcwd(), "config", "ove.ui.env"))
 
