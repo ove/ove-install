@@ -325,8 +325,14 @@ def main():
                          input_filename=os.path.join(bundle_wd, "templates", "config", "Spaces.json"),
                          output_filename=os.path.join(os.getcwd(), "config", "Spaces.json"))
         generate_scripts(params=params,
-                         input_filename=os.path.join(bundle_wd, "templates", "config", "ove.ui.template.env"),
-                         output_filename=os.path.join(os.getcwd(), "config", "ove.ui.env"))
+                         input_filename=os.path.join(bundle_wd, "templates", "config", "default.conf"),
+                         output_filename=os.path.join(os.getcwd(), "config", "default.conf"))
+        generate_scripts(params=params,
+                         input_filename=os.path.join(bundle_wd, "templates", "config", "ove-ui-launcher.template.env"),
+                         output_filename=os.path.join(os.getcwd(), "config", "ove-ui-launcher.env"))
+        generate_scripts(params=params,
+                         input_filename=os.path.join(bundle_wd, "templates", "config", "ove-ui-preview.template.env"),
+                         output_filename=os.path.join(os.getcwd(), "config", "ove-ui-preview.env"))
 
         if params['ASSET_MANAGER_VERSION']:
             generate_scripts(params=params,

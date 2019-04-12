@@ -2,8 +2,6 @@ version: '3.1'
 services:
   ovehub-ove-ove:
     image: ovehub/ove:${OVE_VERSION}
-    ports:
-    - "8080:8080"
     volumes:
       - ./config/Spaces.json:/usr/src/app/packages/ove-core/dist/client/Spaces.json:ro
 
@@ -22,8 +20,6 @@ services:
 
   ovehub-ove-service-persistence-inmemory:
     image: ovehub/ove-service-persistence-inmemory:${OVE_SERVICES_VERSION}
-    ports:
-    - "8190:8190"
 
   ovehub-ove-apps:
     image: ovehub/ove-apps:${OVE_APPS_VERSION}
@@ -31,8 +27,6 @@ services:
       - ovehub-ove-ove
       - ovehub-ove-external-tuoris
       - openvidu-openvidu-call
-    ports:
-    - "8081-8094:8081-8094"
     environment:
       OVE_HOST: "${PUBLIC_HOSTNAME}:8080"
       TUORIS_HOST: "${PUBLIC_HOSTNAME}:7080"
@@ -45,8 +39,17 @@ services:
       - ovehub-ove-ove
       - ovehub-ove-apps
     volumes:
-      - ./config/ove.ui.env:/usr/src/app/packages/ove-ui-preview/.env:ro
-      - ./config/ove.ui.env:/usr/src/app/packages/ove-ui-launcher/.env:ro
-    ports:
-    - "8281-8282:8281-8282"
+      - ./config/ove-ui-preview.env:/usr/src/app/packages/ove-ui-preview/.env:ro
+      - ./config/ove-ui-launcher.env:/usr/src/app/packages/ove-ui-launcher/.env:ro
 
+  nginx:
+    image: nginx:alpine
+    depends_on:
+      - ovehub-ove-ove
+      - ovehub-ove-apps
+      - ovehub-ove-service-persistence-inmemory
+      - ovehub-ove-ui
+    ports:
+    - "8080:80"
+    volumes:
+      - ./default.conf:/etc/nginx/conf.d/default.conf:ro
