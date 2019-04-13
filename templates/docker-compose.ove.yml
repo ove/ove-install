@@ -41,6 +41,7 @@ services:
     volumes:
       - ./config/ove-ui-preview.env:/usr/src/app/packages/ove-ui-preview/.env:ro
       - ./config/ove-ui-launcher.env:/usr/src/app/packages/ove-ui-launcher/.env:ro
+      - ./config/ove-ui-status.env:/usr/src/app/packages/ove-ui-status/.env:ro
 
   nginx:
     image: nginx:alpine
