@@ -43,7 +43,6 @@ services:
       SERVICE_AM_HOSTNAME: "ovehub-ove-asset-manager-service"
       SERVICE_AM_PORT: "6080"
 
-
   ovehub-ove-asset-manager-worker-dzi:
     image: ovehub/ove-asset-manager-worker-dzi:${ASSET_MANAGER_VERSION}
     depends_on:
