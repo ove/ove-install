@@ -24,6 +24,16 @@ services:
       GUNICORN_THREADS: "8"
       SERVICE_LOG_LEVEL: "info"
 
+  ovehub-ove-asset-manager-proxy:
+    image: ovehub/ove-asset-manager-proxy:${ASSET_MANAGER_VERSION}
+    ports:
+      - "6081:6081"
+    volumes:
+      - ./config/:/code/config/:ro
+    environment:
+      GUNICORN_THREADS: "8"
+      SERVICE_LOG_LEVEL: "info"
+
   ovehub-ove-asset-manager-worker-zip:
     image: ovehub/ove-asset-manager-worker-zip:${ASSET_MANAGER_VERSION}
     depends_on:
