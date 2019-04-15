@@ -39,7 +39,7 @@ services:
       - ovehub-ove-ove
       - ovehub-ove-apps
     environment:
-      - OVE_HOST: "${PUBLIC_HOSTNAME}:9080"
+      - OVE_HOST: "${PUBLIC_HOSTNAME}:8080"
       - OVE_UI_LAUNCHER_URL: "//${PUBLIC_HOSTNAME}:8080/ui/launcher"
       - OVE_UI_PREVIEW_URL:  "//${PUBLIC_HOSTNAME}:8080/ui/preview"
       - OVE_UI_STATUS_URL:   "//${PUBLIC_HOSTNAME}:8080/ui/status"
