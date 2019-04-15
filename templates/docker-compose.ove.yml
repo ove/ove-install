@@ -52,6 +52,6 @@ services:
       - ovehub-ove-service-persistence-inmemory
       - ovehub-ove-ui
     ports:
-    - "8080:80"
+    - "8080:8080"
     volumes:
       - ./config/default.conf:/etc/nginx/conf.d/default.conf:ro
