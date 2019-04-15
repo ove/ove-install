@@ -336,6 +336,9 @@ def main():
         generate_scripts(params=params,
                          input_filename=os.path.join(bundle_wd, "templates", "config", "ove-ui-status.template.env"),
                          output_filename=os.path.join(os.getcwd(), "config", "ove-ui-status.env"))
+        generate_scripts(params=params,
+                         input_filename=os.path.join(bundle_wd, "templates", "config", "ove-ui-demo.template.env"),
+                         output_filename=os.path.join(os.getcwd(), "config", "ove-ui-demo.env"))
 
         if params['ASSET_MANAGER_VERSION']:
             generate_scripts(params=params,
