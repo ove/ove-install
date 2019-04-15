@@ -38,11 +38,12 @@ services:
     depends_on:
       - ovehub-ove-ove
       - ovehub-ove-apps
-    volumes:
-      - ./config/ove-ui-preview.env:/usr/src/app/packages/ove-ui-preview/.env:ro
-      - ./config/ove-ui-launcher.env:/usr/src/app/packages/ove-ui-launcher/.env:ro
-      - ./config/ove-ui-status.env:/usr/src/app/packages/ove-ui-status/.env:ro
-      - ./config/ove-ui-demo.env:/usr/src/app/packages/ove-ui-demo/.env:ro
+    environment:
+      - OVE_HOST: "${PUBLIC_HOSTNAME}:9080"
+      - OVE_UI_LAUNCHER_URL: "//${PUBLIC_HOSTNAME}:8080/ui/launcher"
+      - OVE_UI_PREVIEW_URL:  "//${PUBLIC_HOSTNAME}:8080/ui/preview"
+      - OVE_UI_STATUS_URL:   "//${PUBLIC_HOSTNAME}:8080/ui/status"
+      - OVE_UI_DEMO_URL:     "//${PUBLIC_HOSTNAME}:8080/ui/demo"
 
   nginx:
     image: nginx:alpine
