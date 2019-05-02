@@ -303,7 +303,7 @@ def generate_scripts(input_filename, output_filename, params):
     with open(output_filename, mode="w") as fout:
         fout.write(content)
 
-    print("Generated new docker-compose config file in ", output_filename)
+    print("Generated new config file in ", output_filename)
 
 
 def main():
