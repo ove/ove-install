@@ -1,0 +1,124 @@
+trigger:
+  tags:
+    include:
+    - v*
+  branches:
+    include:
+    - '*'
+
+strategy:
+  matrix:
+    linux 2.7:
+      imageName: 'ubuntu-16.04'
+      python.version: '2.7'
+      filePrefix: 'linux-python2'
+      fileSuffix: 'setup'
+      specId: '1'
+    linux 3.6:
+      imageName: 'ubuntu-16.04'
+      python.version: '3.6'
+      python3.dev: 'true'
+      filePrefix: 'linux-python3'
+      fileSuffix: 'setup'
+      specId: '2'
+    osx 2.7:
+      imageName: 'macos-10.13'
+      python.version: '2.7'
+      filePrefix: 'osx-python2'
+      fileSuffix: 'setup'
+      specId: '3'
+    osx 3.6:
+      imageName: 'macos-10.13'
+      python.version: '3.6'
+      filePrefix: 'osx-python3'
+      fileSuffix: 'setup'
+      specId: '4'
+    windows 2.7:
+      imageName: 'vs2017-win2016'
+      python.version: '2.7'
+      vcpython27: 'true'
+      filePrefix: 'windows-python2'
+      fileSuffix: 'setup.exe'
+      specId: '5'
+    windows 3.6:
+      imageName: 'vs2017-win2016'
+      python.version: '3.6'
+      filePrefix: 'windows-python3'
+      fileSuffix: 'setup.exe'
+      specId: '6'
+  maxParallel: 3
+
+pool:
+  vmImage: $(imageName)
+
+steps:
+- script: |
+    sudo add-apt-repository ppa:deadsnakes/ppa
+    sudo apt-get update
+    sudo apt-get install python3.6-dev -y
+  condition: and(succeeded(), eq(variables['python3.dev'], 'true'))
+  displayName: 'Install Python 3.6'
+- task: UsePythonVersion@0
+  displayName: 'Set Python Version'
+  inputs:
+    versionSpec: '$(python.version)'
+    architecture: 'x64'
+- script:
+    choco install -y vcpython27
+  condition: and(succeeded(), eq(variables['vcpython27'], 'true'))
+  displayName: 'Install Microsoft Visual C++ Compiler for Python 2.7'
+- script: | 
+    python --version
+    pip install -r requirements.txt
+  displayName: 'Install requirements'
+- script:
+    pyinstaller setup.py --add-data "templates/docker-compose.*.yml;templates" --add-data templates/config/*.*;templates/config --add-data "versions.json;." --onefile
+  condition: and(succeeded(), eq(variables['imageName'], 'vs2017-win2016'))
+  displayName: 'Build (Windows)'
+- script:
+    pyinstaller setup.py --add-data templates/docker-compose.*.yml:templates --add-data templates/config/*.*:templates/config --add-data versions.json:. --onefile
+  condition: and(succeeded(), ne(variables['imageName'], 'vs2017-win2016'))
+  displayName: 'Build (non-Windows)'
+- script:
+    cp dist/setup* '$(filePrefix)-latest-$(fileSuffix)'
+  condition: and(succeeded(), eq(variables['Build.SourceBranchName'], 'master'))
+  displayName: 'Make copy of installer (master)'
+- script:
+    cp dist/setup* '$(filePrefix)-$(Build.SourceBranchName)-$(fileSuffix)'
+  condition: and(succeeded(), ne(variables['Build.SourceBranchName'], 'master'))
+  displayName: 'Make copy of installer (branch)'
+- task: CopyFiles@2
+  displayName: 'Stage files to be deployed'
+  inputs:
+    contents: '*-setup*'
+    targetFolder: $(Build.ArtifactStagingDirectory)
+#
+# For all commits to a branch, we create draft releases unless they were a pull_request
+# For tags, we upload release artefacts to the tagged release
+#
+- task: GitHubRelease@0
+  displayName: 'Create GitHub Draft Release'
+  inputs:
+    gitHubConnection: ovedeploy
+    tagSource: manual
+    tag: 'untagged-$(Build.SourceVersion)$(Build.BuildNumber)$(specId)'
+    title: '$(Build.BuildId).$(specId)-$(Build.SourceBranchName)'
+    releaseNotesSource: input
+    releaseNotes: 'Based on commit: $(Build.SourceVersion)'
+    assets: '$(Build.ArtifactStagingDirectory)/*-setup*'
+    isDraft: true
+    addChangeLog: false
+  condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'), not(startsWith(variables['Build.SourceBranch'], 'refs/tags/')))
+- task: GithubRelease@0
+  displayName: 'Create GitHub Release'
+  inputs:
+    gitHubConnection: 'ovedeploy'
+    action: 'edit'
+    tagSource: manual
+    tag: '$(Build.SourceBranchName)'
+    assets: '$(Build.ArtifactStagingDirectory)/*-setup*'
+    assetUploadMode: replace
+    isDraft: false
+    addChangeLog: false
+  condition: and(succeeded(), startsWith(variables['Build.SourceBranch'], 'refs/tags/'))
+
