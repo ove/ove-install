@@ -2,16 +2,19 @@ version: '3.1'
 services:
   ovehub-ove-ove:
     image: ovehub/ove:${OVE_VERSION}
+    restart: unless-stopped
     volumes:
       - ./config/Spaces.json:/usr/src/app/packages/ove-core/dist/client/Spaces.json:ro
 
   ovehub-ove-external-tuoris:
     image: ovehub/ove-external-tuoris:${TUORIS_VERSION}
+    restart: unless-stopped
     ports:
     - "7080:7080"
 
   openvidu-openvidu-call:
     image: openvidu/openvidu-call:${OPENVIDU_VERSION}
+    restart: unless-stopped
     ports:
     - "4443:4443"
     environment:
@@ -20,9 +23,11 @@ services:
 
   ovehub-ove-service-persistence-inmemory:
     image: ovehub/ove-service-persistence-inmemory:${OVE_SERVICES_VERSION}
+    restart: unless-stopped
 
   ovehub-ove-apps:
     image: ovehub/ove-apps:${OVE_APPS_VERSION}
+    restart: unless-stopped
     depends_on:
       - ovehub-ove-ove
       - ovehub-ove-external-tuoris
@@ -35,6 +40,7 @@ services:
 
   ovehub-ove-ui:
     image: ovehub/ove-ui:${OVE_UI_VERSION}
+    restart: unless-stopped
     depends_on:
       - ovehub-ove-ove
       - ovehub-ove-apps
@@ -43,6 +49,7 @@ services:
 
   nginx:
     image: nginx:alpine
+    restart: unless-stopped
     depends_on:
       - ovehub-ove-ove
       - ovehub-ove-apps
