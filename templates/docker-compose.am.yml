@@ -4,6 +4,7 @@ services:
   ## this comment is required by the setup.py script and can be removed if this is configured manually ##
   ovehub-ove-asset-storage:
     image: minio/minio:latest
+    restart: unless-stopped
     ports:
       - "${S3_EXT_PORT}:9000"
     volumes:
@@ -16,6 +17,7 @@ services:
   ## END S3 CONFIG ##
   ovehub-ove-asset-manager-service:
     image: ovehub/ove-asset-manager-service:${ASSET_MANAGER_VERSION}
+    restart: unless-stopped
     ports:
       - "6080:6080"
     volumes:
@@ -26,6 +28,7 @@ services:
 
   ovehub-ove-asset-manager-proxy:
     image: ovehub/ove-asset-manager-proxy:${ASSET_MANAGER_VERSION}
+    restart: unless-stopped
     ports:
       - "6081:6081"
     volumes:
@@ -36,6 +39,7 @@ services:
 
   ovehub-ove-asset-manager-worker-zip:
     image: ovehub/ove-asset-manager-worker-zip:${ASSET_MANAGER_VERSION}
+    restart: unless-stopped
     depends_on:
       - ovehub-ove-asset-manager-service
     environment:
@@ -45,6 +49,7 @@ services:
 
   ovehub-ove-asset-manager-worker-dzi:
     image: ovehub/ove-asset-manager-worker-dzi:${ASSET_MANAGER_VERSION}
+    restart: unless-stopped
     depends_on:
       - ovehub-ove-asset-manager-service
     environment:
@@ -54,6 +59,7 @@ services:
 
   ovehub-ove-asset-manager-worker-tulip:
     image: ovehub/ove-asset-manager-worker-tulip:${ASSET_MANAGER_VERSION}
+    restart: unless-stopped
     depends_on:
       - ovehub-ove-asset-manager-service
     environment:
@@ -63,6 +69,7 @@ services:
 
   ovehub-ove-asset-manager-ui:
     image: ovehub/ove-asset-manager-ui:${ASSET_MANAGER_VERSION}
+    restart: unless-stopped
     ports:
       - "6060:6060"
     environment:
