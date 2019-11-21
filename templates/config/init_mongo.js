@@ -1,3 +1,5 @@
+/* These are Mongo Shell commands, as documented at https://docs.mongodb.com/manual/mongo/ */
+
 db.createUser(
     {
         user: "${MONGO_USER}",
