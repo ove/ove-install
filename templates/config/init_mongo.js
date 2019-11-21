@@ -13,9 +13,9 @@ db.createUser(
     }
 );
 
-db.createCollection('auth');
+db.createCollection("${MONGO_COLLECTION}");
 
-db.getCollection('auth').insert({
+db.getCollection("${MONGO_COLLECTION}").insert({
     "user" : "guest",
     "am" : {
         "read_groups" : [

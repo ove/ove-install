@@ -33,6 +33,7 @@ def generate_jwt_secret():
         letters_and_digits = string.ascii_letters + string.digits
         return ''.join(random.choice(letters_and_digits) for i in range(10))
 
+
 OPENVIDU_SECRET = "MY_SECRET"
 
 AM_STORE_NAME = "default"
@@ -273,16 +274,16 @@ def read_script_params():
             mongo_host = MONGO_HOST
             mongo_port = get_val("MongoDB external port", MONGO_PORT)
         else:
-            mongo_host = get_val("MongoDB hostname", MONGO_PORT)
+            mongo_host = get_val("MongoDB hostname", ip)
             mongo_port = get_val("MongoDB port", MONGO_PORT)
 
         mongo_user = get_val("MongoDB username", MONGO_USER)
         mongo_password = get_val("MongoDB password", MONGO_PASSWORD)
         mongo_db = get_val("MongoDB database name", MONGO_DB)
-        mongo_collection = get_val("MongoDB collection name", MONGO_COLLECTION)
+        mongo_collection = get_val("MongoDB authentication collection name", MONGO_COLLECTION)
         mongo_auth_mechanism = get_val("MongoDB auth mechanism", MONGO_AUTH_MECHANISM)
 
-        jwt_secret = get_val("MongoDB auth mechanism", JWT_SECRET)
+        jwt_secret = get_val("Authentication JWT Key", JWT_SECRET)
 
     return {
         'PUBLIC_HOSTNAME': ip,
@@ -341,7 +342,7 @@ def generate_scripts(input_filename, output_filename, params):
         content = re.sub(pattern=r"[ ]*## BEGIN MONGO STORAGE ##.*## END MONGO STORAGE ##[ ]*\n?",
                          repl="", string=content, flags=re.MULTILINE | re.DOTALL)
 
-    if not params['MONGO_ENABLED'] and not params['S3_ENABLED']:
+    if not (params['MONGO_ENABLED'] or params['S3_ENABLED']):
         content = re.sub(pattern=r"[ ]*## BEGIN STORAGE ##.*## END STORAGE ##[ ]*\n?",
                          repl="", string=content, flags=re.MULTILINE | re.DOTALL)
 

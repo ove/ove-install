@@ -5,7 +5,7 @@
     "user": "${MONGO_USER}",
     "password": "${MONGO_PASSWORD}",
     "db": "${MONGO_DB}",
-    "mechanism": "SCRAM-SHA-256",
+    "mechanism": "${MONGO_AUTH_MECHANISM}",
     "workerCollection": "workers",
     "workerQueue": "workers_queue"
   }
