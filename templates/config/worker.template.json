@@ -1,0 +1,12 @@
+{
+  "mongo": {
+    "host": "${MONGO_HOST}",
+    "port": ${MONGO_PORT},
+    "user": "${MONGO_USER}",
+    "password": "${MONGO_PASSWORD}",
+    "db": "${MONGO_DB}",
+    "mechanism": "SCRAM-SHA-256",
+    "workerCollection": "workers",
+    "workerQueue": "workers_queue"
+  }
+}
