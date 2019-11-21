@@ -398,6 +398,9 @@ def main():
             generate_scripts(params=params,
                              input_filename=os.path.join(bundle_wd, "templates", "config", "auth.template.json"),
                              output_filename=os.path.join(os.getcwd(), "config", "auth.json"))
+            generate_scripts(params=params,
+                             input_filename=os.path.join(bundle_wd, "templates", "config", "whitelist.template.json"),
+                             output_filename=os.path.join(os.getcwd(), "config", "whitelist.json"))
 
     outro_msg(proceed, params)
     exit_msg()
