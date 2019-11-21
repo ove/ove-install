@@ -15,7 +15,7 @@ services:
     command: server /data
   ## END S3 CONFIG ##
 
-  ## BEGIN Mongo CONFIG ##
+  ## BEGIN MONGO CONFIG ##
   ## this comment is required by the setup.py script and can be removed if this is configured manually ##
   ovehub-ove-asset-mongo:
     image: mongo:latest
@@ -29,7 +29,7 @@ services:
       MONGO_INITDB_ROOT_USERNAME: "${MONGO_USER}"
       MONGO_INITDB_DATABASE: "${MONGO_DB}"
       MONGO_INITDB_ROOT_PASSWORD: "${MONGO_PASSWORD}"
-  ## END Mongo CONFIG ##
+  ## END MONGO CONFIG ##
 
   ovehub-ove-asset-manager-service:
     image: ovehub/ove-asset-manager-service:${ASSET_MANAGER_VERSION}
@@ -110,6 +110,6 @@ volumes:
   ## BEGIN S3 STORAGE ##
   ovehub-ove-asset-storage-data:
   ## END S3 STORAGE ##
-  ## BEGIN Mongo STORAGE ##
+  ## BEGIN MONGO STORAGE ##
   ovehub-ove-asset-mongo-data:
-  ## END Mongo STORAGE ##
+  ## END MONGO STORAGE ##
