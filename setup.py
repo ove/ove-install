@@ -9,15 +9,6 @@ import re
 import sys
 from distutils.spawn import find_executable
 
-OPENVIDU_SECRET = "MY_SECRET"
-
-AM_STORE_NAME = "default"
-
-S3_SERVER = "ovehub-ove-asset-storage"
-S3_PORT = "9000"
-S3_ACCESS_KEY = "MINIO_ACCESS_KEY"
-S3_SECRET_KEY = "MINIO_SECRET_KEY"
-
 # On Python 2.7, input() evaluates what the user types, and raw_input() simply returns it
 # On Python 3, input() returns it, and there is no raw_input() function
 try:
@@ -30,6 +21,35 @@ try:
     from json.decoder import JSONDecodeError
 except ImportError:
     JSONDecodeError = ValueError
+
+
+def generate_jwt_secret():
+    try:
+        import secrets
+        return secrets.token_urlsafe()
+    except ImportError:
+        import random
+        import string
+        letters_and_digits = string.ascii_letters + string.digits
+        return ''.join(random.choice(letters_and_digits) for i in range(10))
+
+OPENVIDU_SECRET = "MY_SECRET"
+
+AM_STORE_NAME = "default"
+
+S3_SERVER = "ovehub-ove-asset-storage"
+S3_PORT = "9000"
+S3_ACCESS_KEY = "MINIO_ACCESS_KEY"
+S3_SECRET_KEY = "MINIO_SECRET_KEY"
+
+MONGO_HOST = "ovehub-ove-asset-mongo"
+MONGO_PORT = 27017
+MONGO_USER = "user"
+MONGO_PASSWORD = "password"
+MONGO_DB = "db"
+MONGO_COLLECTION = "auth"
+MONGO_AUTH_MECHANISM = "SCRAM-SHA-256"
+JWT_SECRET = generate_jwt_secret()
 
 
 def bundle_dir():
@@ -119,7 +139,7 @@ def outro_msg(proceed, params):
         print("\t docker-compose -f docker-compose.setup.ove.yml up -d")
         if params['ASSET_MANAGER_VERSION']:
             print("\t docker-compose -f docker-compose.setup.am.yml up -d")
-            print("\t NOTE: If you copy the compose files to another machine, please copy the generated 'config/credentials.json' file as well")
+            print("\t NOTE: If you copy the compose files to another machine, please also copy the generated files in the 'config/' directory")
         print("")
         print("NOTE: -d flag runs the docker commands in detached mode")
         print("---")
@@ -201,48 +221,68 @@ def read_script_params():
     s3_access_key = None
     s3_secret_key = None
 
+    mongo_enabled = False
+    mongo_host = None
+    mongo_port = None
+    mongo_user = None
+    mongo_password = None
+    mongo_db = None
+    mongo_collection = None
+    mongo_auth_mechanism = None
+    jwt_secret = None
+
     defaults = read_flag("Use default settings", "yes")
+
     if defaults:
-        openvidu_secret = OPENVIDU_SECRET
-
-        if asset_manager_version:
-            am_store_name = AM_STORE_NAME
-
-            s3_enabled = True
-            s3_server = S3_SERVER
-            s3_external_ip = ip
-            s3_external_port = S3_PORT
-            s3_port = S3_PORT
-            s3_access_key = S3_ACCESS_KEY
-            s3_secret_key = S3_SECRET_KEY
+        get_val = lambda prompt, default_val: default_val
+        get_flag = lambda prompt, default_val: default_val
     else:
+        get_val = read_var
+        get_flag = read_flag
+
+    print("")
+    print("OVE setup")
+    print("")
+
+    openvidu_secret = get_val("OpenVidu Secret", OPENVIDU_SECRET)
+
+    if asset_manager_version:
         print("")
-        print("OVE setup")
+        print("OVE Asset Manager setup")
         print("")
 
-        openvidu_secret = read_var("OpenVidu Secret", OPENVIDU_SECRET)
+        am_store_name = get_val("Asset Manager default store name", AM_STORE_NAME)
 
-        if asset_manager_version:
-            print("")
-            print("OVE Asset Manager setup")
-            print("")
+        s3_enabled = get_flag("Add Minio instance (S3 store) to docker-compose file", "yes")
+        if s3_enabled:
+            s3_server = S3_SERVER
+            s3_port = S3_PORT
+            s3_external_ip = get_val("S3 external ip or hostname", ip)
+            s3_external_port = get_val("S3 external port", S3_PORT)
+        else:
+            s3_server = get_val("S3 server", ip)
+            s3_port = get_val("S3 server port", S3_PORT)
+            s3_external_ip = s3_server
+            s3_external_port = s3_port
 
-            am_store_name = read_var("Asset Manager default store name", AM_STORE_NAME)
+        s3_access_key = get_val("S3 Access key", S3_ACCESS_KEY)
+        s3_secret_key = get_val("S3 Secret key", S3_SECRET_KEY)
 
-            s3_enabled = read_flag("Use internal S3 storage", "yes")
-            if s3_enabled:
-                s3_server = S3_SERVER
-                s3_external_ip = read_var("S3 external ip or hostname", ip)
-                s3_external_port = read_var("S3 external port", S3_PORT)
-                s3_port = S3_PORT
-            else:
-                s3_server = read_var("S3 server", ip)
-                s3_port = read_var("S3 server port", S3_PORT)
-                s3_external_ip = s3_server
-                s3_external_port = s3_port
+        mongo_enabled = get_flag("Add MongoDB instance to docker-compose file", "yes")
+        if mongo_enabled:
+            mongo_host = MONGO_HOST
+            mongo_port = get_val("MongoDB external port", MONGO_PORT)
+        else:
+            mongo_host = get_val("MongoDB hostname", MONGO_PORT)
+            mongo_port = get_val("MongoDB port", MONGO_PORT)
 
-            s3_access_key = read_var("S3 Access key", S3_ACCESS_KEY)
-            s3_secret_key = read_var("S3 Secret key", S3_SECRET_KEY)
+        mongo_user = get_val("MongoDB username", MONGO_USER)
+        mongo_password = get_val("MongoDB password", MONGO_PASSWORD)
+        mongo_db = get_val("MongoDB database name", MONGO_DB)
+        mongo_collection = get_val("MongoDB collection name", MONGO_COLLECTION)
+        mongo_auth_mechanism = get_val("MongoDB auth mechanism", MONGO_AUTH_MECHANISM)
+
+        jwt_secret = get_val("MongoDB auth mechanism", JWT_SECRET)
 
     return {
         'PUBLIC_HOSTNAME': ip,
@@ -266,6 +306,17 @@ def read_script_params():
         'S3_EXT_IP': s3_external_ip,
         'S3_ACCESS_KEY': s3_access_key,
         'S3_SECRET_KEY': s3_secret_key,
+
+        'MONGO_ENABLED': mongo_enabled,
+        'MONGO_HOST': mongo_host,
+        'MONGO_PORT': mongo_port,
+        'MONGO_USER': mongo_user,
+        'MONGO_PASSWORD': mongo_password,
+        'MONGO_DB': mongo_db,
+        'MONGO_COLLECTION': mongo_collection,
+        'MONGO_AUTH_MECHANISM': mongo_auth_mechanism,
+
+        'JWT_SECRET': jwt_secret
     }
 
 
@@ -284,7 +335,13 @@ def generate_scripts(input_filename, output_filename, params):
         content = re.sub(pattern=r"[ ]*## BEGIN S3 STORAGE ##.*## END S3 STORAGE ##[ ]*\n?",
                          repl="", string=content, flags=re.MULTILINE | re.DOTALL)
 
-    if not params['S3_ENABLED']:
+    if not params['MONGO_ENABLED']:
+        content = re.sub(pattern=r"[ ]*## BEGIN MONGO CONFIG ##.*## END MONGO CONFIG ##[ ]*\n?",
+                         repl="", string=content, flags=re.MULTILINE | re.DOTALL)
+        content = re.sub(pattern=r"[ ]*## BEGIN MONGO STORAGE ##.*## END MONGO STORAGE ##[ ]*\n?",
+                         repl="", string=content, flags=re.MULTILINE | re.DOTALL)
+
+    if not params['MONGO_ENABLED'] and not params['S3_ENABLED']:
         content = re.sub(pattern=r"[ ]*## BEGIN STORAGE ##.*## END STORAGE ##[ ]*\n?",
                          repl="", string=content, flags=re.MULTILINE | re.DOTALL)
 
@@ -335,6 +392,12 @@ def main():
             generate_scripts(params=params,
                              input_filename=os.path.join(bundle_wd, "templates", "config", "credentials.template.json"),
                              output_filename=os.path.join(os.getcwd(), "config", "credentials.json"))
+            generate_scripts(params=params,
+                             input_filename=os.path.join(bundle_wd, "templates", "config", "init_mongo.js"),
+                             output_filename=os.path.join(os.getcwd(), "config", "init_mongo.js"))
+            generate_scripts(params=params,
+                             input_filename=os.path.join(bundle_wd, "templates", "config", "auth.template.json"),
+                             output_filename=os.path.join(os.getcwd(), "config", "auth.json"))
 
     outro_msg(proceed, params)
     exit_msg()
