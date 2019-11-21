@@ -58,6 +58,8 @@ services:
     restart: unless-stopped
     depends_on:
       - ovehub-ove-asset-manager-service
+    volumes:
+      - ./config/:/code/config/:ro
     environment:
       SERVICE_LOG_LEVEL: "info"
       SERVICE_AM_HOSTNAME: "ovehub-ove-asset-manager-service"
@@ -69,6 +71,8 @@ services:
     restart: unless-stopped
     depends_on:
       - ovehub-ove-asset-manager-service
+    volumes:
+      - ./config/:/code/config/:ro
     environment:
       SERVICE_LOG_LEVEL: "info"
       SERVICE_AM_HOSTNAME: "ovehub-ove-asset-manager-service"
@@ -78,6 +82,8 @@ services:
   ovehub-ove-asset-manager-worker-tulip:
     image: ovehub/ove-asset-manager-worker-tulip:${ASSET_MANAGER_VERSION}
     restart: unless-stopped
+    volumes:
+      - ./config/:/code/config/:ro
     depends_on:
       - ovehub-ove-asset-manager-service
     environment:
@@ -91,6 +97,8 @@ services:
     restart: unless-stopped
     ports:
       - "6060:6060"
+    volumes:
+      - ./config/:/code/config/:ro
     environment:
       SERVICE_LOG_LEVEL: "info"
       SERVICE_AM_HOSTNAME: "ovehub-ove-asset-manager-service"
