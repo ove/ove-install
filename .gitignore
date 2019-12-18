@@ -11,4 +11,4 @@ __pycache__/
 setup.spec
 .travis.yml
 docker-compose.setup.*.yml
-config/credentials.json
+config/*
