@@ -96,7 +96,7 @@ steps:
 # For all commits to a branch, we create draft releases unless they were a pull_request
 # For tags, we upload release artefacts to the tagged release
 #
-- task: GitHubRelease@0
+- task: GitHubRelease@0.198.0
   displayName: 'Create GitHub Draft Release'
   inputs:
     gitHubConnection: ovedeploy
@@ -109,7 +109,7 @@ steps:
     isDraft: true
     addChangeLog: false
   condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'), not(startsWith(variables['Build.SourceBranch'], 'refs/tags/')))
-- task: GithubRelease@0
+- task: GithubRelease@0.198.0
   displayName: 'Create GitHub Release'
   inputs:
     gitHubConnection: 'ovedeploy'
