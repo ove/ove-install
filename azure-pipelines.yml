@@ -87,7 +87,7 @@ steps:
     cp dist/setup* '$(filePrefix)-$(Build.SourceBranchName)-$(fileSuffix)'
   condition: and(succeeded(), ne(variables['Build.SourceBranchName'], 'master'))
   displayName: 'Make copy of installer (branch)'
-- task: CopyFiles@2
+- task: CopyFiles@2.209.0
   displayName: 'Stage files to be deployed'
   inputs:
     contents: '*-setup*'
