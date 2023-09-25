@@ -1,4 +1,4 @@
-altgraph==0.16.1
+altgraph==0.17.4
 future==0.17.1
 macholib==1.11
 netifaces==0.10.9
